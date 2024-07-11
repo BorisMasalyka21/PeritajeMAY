@@ -1464,6 +1464,54 @@ document.addEventListener('DOMContentLoaded', function() {
         validarCuil(this, 'cuil-duenio-error');
     });
 });
+// SCRIPT AÑO SOLO 4 DIGITOS
+function validateYearInput(event) {
+    const input = event.target;
+    const value = input.value;
+    const errorElement = input.nextElementSibling;
+  
+    if (value.length > 4) {
+      input.value = value.slice(0, 4);
+    }
+  
+    if (value.length !== 4) {
+      errorElement.style.display = 'block';
+      errorElement.textContent = "Ingrese un año correcto.";
+    } else {
+      errorElement.style.display = 'none';
+    }
+  }
+  
+  function validateYearOnSubmit() {
+    const yearInputs = document.querySelectorAll('.year-input');
+    let valid = true;
+    yearInputs.forEach(input => {
+      const errorElement = input.nextElementSibling;
+      if (input.value.length !== 4) {
+        errorElement.style.display = 'block';
+        errorElement.textContent = "Ingrese un año correcto.";
+        valid = false;
+      }
+    });
+    return valid;
+  }
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    const yearInputs = document.querySelectorAll('.year-input');
+    yearInputs.forEach(input => {
+      input.insertAdjacentHTML('afterend', '<div class="year-error" style="color: red; display: none;"></div>');
+      input.addEventListener('input', validateYearInput);
+    });
+  
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+      form.addEventListener('submit', function(event) {
+        if (!validateYearOnSubmit()) {
+          event.preventDefault();
+        }
+      });
+    });
+  });
 
     </script>
 <script src="{% static 'js/script.js' %}"></script>      
