@@ -299,13 +299,20 @@ def home(request):
         nombre_entrega_query = request.POST.get('nombre_entrega')
         patente_query = request.POST.get('patente')
         modelo_query = request.POST.get('modelo')
+        aceptado_query = request.POST.get('aceptado')
+        enviado_query = request.POST.get('enviado')
  
         if nombre_entrega_query:
             peritajes = peritajes.filter(clienteperitar__nombre_apellido_entrega__icontains=nombre_entrega_query)
         if patente_query:
-            peritajes = peritajes.filter(cocheperitaje__patente__icontains=patente_query)
+            peritajes = peritajes.filter(cocheperitaje__patente__exact=patente_query)
         if modelo_query:
             peritajes = peritajes.filter(cocheperitaje__modelo__icontains=modelo_query)
+        if aceptado_query:
+            peritajes  = peritajes.filter(estado__icontains = aceptado_query)
+        if enviado_query:
+            peritajes  = peritajes.filter(estado__icontains = enviado_query) 
+            print(peritajes)
  
     # Crear una lista de peritajes con la fecha de tasación
     peritajes_con_fechas = []

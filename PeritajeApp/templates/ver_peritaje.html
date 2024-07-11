@@ -842,14 +842,18 @@
                       {% csrf_token %}
                       {% if es_gerente %}
                           <div class="text-center my-4">
-                              <button type="submit" name="aprobado" class="btn btn-primary btn-primary-custom" style="background-color: green">APROBAR</button>
-                              <button type="submit" name="rechazado" class="btn btn-primary btn-primary-custom" style="background-color: red">RECHAZAR</button>
+                              <button style="background-color: #AC0000; border: none;" class="btn btn-primary btn-primary-custom" onclick="goBack()">VOLVER</button>
+                              <button type="submit" name="aprobado" class="btn btn-primary btn-primary-custom" style="background-color: green; border: none;">APROBAR</button> 
                           </div>
                       {% endif %}
                   </form>
             </form>
 </div>
     <script>
+        //Volver atras
+function goBack() {
+    window.history.back();
+}
         document.addEventListener('DOMContentLoaded', function() {
             // Formateo de números de teléfono
             var phoneInputs = document.querySelectorAll(".telefono_duenio");

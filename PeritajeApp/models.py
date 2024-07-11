@@ -153,6 +153,7 @@ class CochePeritaje(models.Model):
     CAJA_CHOICES = [('Manual', 'Manual'),('Automatico', 'Automatico'),]
     COMBUSTIBLE_CHOICES = [('NAFTA', 'NAFTA'),('DIESEL', 'DIESEL'),('GNC', 'GNC')]
     PUERTAS_CHOICES= [('2', '2'),('3', '3'),('4', '4'),('5', '5')]
+    
     COLORES_CHOICES = [
     ('amarillo', 'Amarillo'),
     ('azul', 'Azul'),

@@ -9,6 +9,7 @@
 <!-- Enlace a tu CSS personalizado -->
 <link rel="stylesheet" href="{% static 'css/ver_peritaje.css' %}">
 <style>
+   
 
     #id_fecha_tasacion, #id_fecha_recepcion, #id_receptor, #id_peritador{
         height: 38px !important;
@@ -197,6 +198,36 @@
     background-color: #e8ecef  !important;
     color:#e8ecef !important;
 }
+.itv-field {
+    display: flex; /* Mostrar en todo momento */
+    flex-direction: row; /* Estilo flex */
+}
+.disabled-field {
+    background-color: #d3d3d3 !important; /* Color más oscuro para los campos deshabilitados */
+
+/* Estilo del botón SIGUIENTE */
+.btn-primary-custom {
+    background-color: #1A1D39;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    
+}
+
+/* Estilo del botón VOLVER (puedes reutilizar el estilo de btn-primary-custom si es el mismo) */
+.back-button {
+    background-color: #AC0000;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-top: 2px;
+}
 </style>
 
 <div class="container">
@@ -269,10 +300,14 @@
             </div>
 
              {% comment %} CHECK CIENTE DUEÑO {% endcomment %}
-            <div class="col-md-4 col-sm-4 col-xs-7" style="padding: 0 !important; margin-bottom: 0 !important">
+             <div class="col-md-4 col-sm-4 col-xs-7" style="padding: 0 !important; margin-bottom: 0 !important">
                 <div class="form-group">
                     <div class="form-check" style="padding: 0px !important;">
-                        <label class="form-check-label" for="toggleEntrega">No es titular<input type="checkbox" class="form-check-input" id="toggleEntrega" onclick="toggleEntregaFields()" style="height: 15px !important;"></label>
+                        <label>Titular</label>
+                        <select id="titularSelect" class="form-control" style="font-size: 13px !important;">
+                            <option value="ES TITULAR">ES TITULAR</option>
+                            <option value="NO ES TITULAR">NO ES TITULAR</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -348,11 +383,13 @@
                 </div>
                 <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
                     <div class="form-group">
-                        <label for="toggleITV">Tiene ITV o VTV? <input type="checkbox" id="toggleITV" onclick="toggleITVFields()" style="height: 15px !important;"></label>
-                        
+                        <label for="toggleITV">
+                        Vto. ITV o VTV
+                            <input type="checkbox" id="toggleITV" onclick="toggleITVFields()" style="height: 15px !important;">
+                        </label>
                     </div>
                     <div class="form-group itv-field">
-                        <label for="{{ coche_form.vto_de_vto_o_itv.id_for_label }}">Vto:</label>
+                        
                         {{ coche_form.vto_de_vto_o_itv }}
                     </div>
                 </div>
@@ -893,13 +930,20 @@
             <div id="preview" class="preview-container"></div>
             <div id="error-message" style="color: red; text-align: center; display: none;">Por favor, sube al menos una imagen.</div>
             <div class="text-center my-4">
-                <button style="background-color: #1A1D39; border:none;" type="submit" class="btn btn-primary btn-primary-custom" style="margin-bottom: 20px;" id="next-button">SIGUIENTE</button>
-            </div>
                
+                <button style="background-color: #AC0000; border: none;" class="btn btn-primary btn-primary-custom" onclick="goBack()">VOLVER</button>
+                <button type="submit" class="btn btn-primary btn-primary-custom" id="next-button">SIGUIENTE</button>
+            </div>
+            
                
  </form> 
 </div>
 <script>
+//Volver atras
+function goBack() {
+    window.history.back();
+}
+
     document.addEventListener('DOMContentLoaded', function() {
         // Formateo de números de teléfono
         var phoneInputs = document.querySelectorAll(".telefono_duenio");
@@ -974,24 +1018,29 @@
     } {% endcomment %}
     {% comment %} CHECKBOX DE CLIENTE DUPLICADOS {% endcomment %}
 
-    function toggleEntregaFields() {
-        var checkBox = document.getElementById("toggleEntrega");
+    document.addEventListener('DOMContentLoaded', function() {
+        var titularSelect = document.getElementById("titularSelect");
         var entregaFields = document.querySelectorAll(".entrega-field");
 
-        if (checkBox.checked) {
-            entregaFields.forEach(function(field) {
-                field.style.display = "block";
-            });
-        } else {
-            entregaFields.forEach(function(field) {
-                field.style.display = "none";
-            });
+        function toggleEntregaFields() {
+            if (titularSelect.value === "ES TITULAR") {
+                entregaFields.forEach(function(field) {
+                    field.style.display = "none";
+                });
+            } else {
+                entregaFields.forEach(function(field) {
+                    field.style.display = "block";
+                });
+            }
         }
-    }
 
-    // Inicializa el estado de los campos al cargar la página
-    document.addEventListener("DOMContentLoaded", function() {
+        // Llama a la función inicialmente para establecer el estado correcto
         toggleEntregaFields();
+
+        // Agrega un listener para detectar cambios en el campo titular
+        titularSelect.addEventListener('change', function() {
+            toggleEntregaFields();
+        });
     });
     </script>
 
@@ -1117,17 +1166,19 @@
         });
         
          // ITV OPCIONAL
-        function toggleITVFields() {
+         function toggleITVFields() {
             var checkBox = document.getElementById("toggleITV");
-            var itvFields = document.querySelectorAll(".itv-field");
+            var itvFields = document.querySelectorAll(".itv-field input");
 
             if (checkBox.checked) {
                 itvFields.forEach(function(field) {
-                    field.style.display = "flex";
+                    field.disabled = false;
+                    field.classList.remove('disabled-field');
                 });
             } else {
                 itvFields.forEach(function(field) {
-                    field.style.display = "none";
+                    field.disabled = true;
+                    field.classList.add('disabled-field');
                 });
             }
         }
@@ -1136,7 +1187,6 @@
         document.addEventListener("DOMContentLoaded", function() {
             toggleITVFields();
         });
-
 
         </script>
         <script>

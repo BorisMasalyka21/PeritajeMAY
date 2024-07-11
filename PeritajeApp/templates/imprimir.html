@@ -6,7 +6,7 @@
 {% block content %}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<div id="tabla-a-capturar">
+
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/imprimir.css' %}">  
@@ -20,6 +20,10 @@
     }
     
 </style>
+<button style="background-color: #AC0000; border: none;" class="btn btn-primary btn-primary-custom" onclick="goBack()">VOLVER</button>
+<button  class="btn btn-secondary" id="generar-pdf-btn">Generar PDF</button><canvas id="canvas" style="display: none;"></canvas>
+<div id="tabla-a-capturar">
+
 <div>
     <label  style="text-align: left;">Peritaje N° </label>
     <span>{{ peritaje.codigo_peritaje }}</span>
@@ -231,7 +235,7 @@
                                     </tr>
                                     <tr>
                                         <td style=" font-size: 6px; " for="{{Equipamiento_form.AlzaCristales}}">Alza Cristales</td>
-                                        <td style="text-align: center;  padding: 0px;"><input  style="max-width: 40px; height: 12px;  border: 0px !important;" type="text" name="{{ equipamiento_form.AlzaCristales.name }}" id="{{equipamiento_form.AlzaCristales.id_for_label }}" value="{{ equipamiento_form.AlzaCristales.value }}" readonly></td>
+                                        <td style="text-align: center;  padding: 0px;"><input  style="max-width: 40px; height: 12px;  border: 0px !important; text-align: center;  padding: 0px; " type="text" name="{{ equipamiento_form.AlzaCristales.name }}" id="{{equipamiento_form.AlzaCristales.id_for_label }}" value="{{ equipamiento_form.AlzaCristales.value }}" readonly ></td>
                                     </tr>
                                     <tr>
                                         <td style=" font-size: 6px; " for="{{Equipamiento_form.CierraCentralizado}}">Cierre Centralizado</td>
@@ -560,7 +564,7 @@
                                     <td data-label="Vida Útil %"><input style="height: 12px; border: 0px !important; background-color: white !important;" class="form-control" type="text" name="{{ inspeccion_cubiertas_form.vida_util_delantera_derecha.name }}" id="{{ inspeccion_cubiertas_form.vida_util_delantera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.vida_util_delantera_derecha.value }}" readonly></td>
                                     <td data-label="Gastos"><input style="height: 12px; border: 0px !important; background-color: white !important;" class="form-control gasto-subtotal" type="text" name="{{ inspeccion_cubiertas_form.gastos_delantera_derecha.name }}" id="{{ inspeccion_cubiertas_form.gastos_delantera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.gastos_delantera_derecha.value|default:"$ 0,00" }}" readonly></td>
                                     <td rowspan="5" style="text-align: left !important;">
-                                        <textarea name="observaciones_cubiertas" rows="4" cols="50" disabled>{{ inspeccion_cubiertas_form.observaciones_cubiertas.value }}</textarea>
+                                        <textarea name="observaciones_cubiertas" rows="5" cols="50" disabled style="resize: none !important;">{{ inspeccion_cubiertas_form.observaciones_cubiertas.value }}</textarea>
                 
                                     </td>
                                 </tr>
@@ -758,7 +762,6 @@
 </div>
 
 
-<button  class="btn btn-secondary" id="generar-pdf-btn">Generar PDF</button><canvas id="canvas" style="display: none;"></canvas>
 
 
 </div>
@@ -766,7 +769,12 @@
  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.1/html2pdf.bundle.min.js"></script>
-
+<script>
+    //Volver atras
+function goBack() {
+    window.history.back();
+}
+</script>
 <script>
 
   // Obten la fecha actual
