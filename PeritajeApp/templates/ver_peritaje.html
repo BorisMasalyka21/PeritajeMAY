@@ -1,0 +1,978 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Enlace a Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+<!-- Enlace al CSS de Bootstrap -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- Enlace a tu CSS personalizado -->
+<link rel="stylesheet" href="{% static 'css/ver_peritaje.css' %}">
+<style>
+    .precio-value {
+        pointer-events: none;
+     
+        color: #666;
+
+    }
+    .container{
+    width: 85% !important;
+    .dark-input {
+        background-color:#e8ecef !important;
+        color: #fff !important;
+        cursor: not-allowed;
+    }
+}
+</style>
+<div class="container">
+    <div class="peritaje-info mt-3" style="text-align: center;">
+        <h3>Peritaje N° <span>{{ peritaje.codigo_peritaje }}</span> - {{ usuario.branch.name|default:"Sin sucursal asignada" }}</h3>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" id="primerbloque">
+        {% csrf_token %}
+        <!-- Primer bloque de formulario -->
+        <tbody>
+            <div class="form-section">
+                <div class="section-header text-center font-weight-bold " style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">DATOS DEL CLIENTE</div>
+            <div class="row">
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important; margin-bottom: 0 !important">
+                    <div class="form-group">
+                        <label for="{{ coche_form.fecha_tasacion.id_for_label }}">Fecha Tasacion</label>
+                        <input class="form-control" type="text" name="{{ coche_form.fecha_tasacion.name }}" id="{{ coche_form.fecha_tasacion.id_for_label }}" value="{{ fecha_tasacion_formateada }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.peritador.id_for_label }}">Perito</label>
+                        <input class="form-control" type="text" name="{{ coche_form.peritador.name }}" id="{{ coche_form.peritador.id_for_label }}" value="{{ user.get_full_name|default:user.username }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.receptor.id_for_label }}">Receptor</label>
+                        <input class="form-control dark-input" type="text" name="{{ coche_form.receptor.name }}" id="{{ coche_form.receptor.id_for_label }}" value="{{ coche_form.receptor.value|default:'-' }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.fecha_recepcion.id_for_label }}">Recepción</label>
+                        <input class="form-control dark-input" type="text" name="{{ coche_form.fecha_recepcion.name }}" id="{{ coche_form.fecha_recepcion.id_for_label }}" value="{{ coche_form.fecha_recepcion.value|default:'-' }}" readonly>
+                    </div>
+                </div>       
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-12 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.nombre_apellido_entrega.id_for_label }}">Nombre y Apellido</label>
+                        <input class="form-control" type="text" name="{{ clienteperitar_form.nombre_apellido_entrega.name }}" id="{{ clienteperitar_form.nombre_apellido_entrega.id_for_label }}" value="{{ clienteperitar_form.nombre_apellido_entrega.value }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.telefono_entrega.id_for_label }}">Telefono</label>
+                        <input class="form-control" type="text" name="{{ clienteperitar_form.telefono_entrega.name }}" id="{{ clienteperitar_form.telefono_entrega.id_for_label }}" value="{{ clienteperitar_form.telefono_entrega.value }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.email_entrega.id_for_label }}">Email</label>
+                        <input class="form-control" type="email" name="{{ clienteperitar_form.email_entrega.name }}" id="{{ clienteperitar_form.email_entrega.id_for_label }}" value="{{ clienteperitar_form.email_entrega.value }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.cuil_entrega.id_for_label }}">CUIL</label>
+                        <input class="form-control" type="text" name="{{ clienteperitar_form.cuil_entrega.name }}" id="{{ clienteperitar_form.cuil_entrega.id_for_label }}" value="{{ clienteperitar_form.cuil_entrega.value }}" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-12 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.nombre_apellido_duenio.id_for_label }}">Nombre y Apellido dueño</label>
+                        <input class="form-control" type="text" name="{{ clienteperitar_form.nombre_apellido_duenio.name }}" id="{{ clienteperitar_form.nombre_apellido_duenio.id_for_label }}" value="{{ clienteperitar_form.nombre_apellido_duenio.value }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.telefono_duenio.id_for_label }}">Telefono dueño</label>
+                        <input class="form-control" type="text" name="{{ clienteperitar_form.telefono_duenio.name }}" id="{{ clienteperitar_form.telefono_duenio.id_for_label }}" value="{{ clienteperitar_form.telefono_duenio.value }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.email_duenio.id_for_label }}">Email dueño</label>
+                        <input class="form-control" type="email" name="{{ clienteperitar_form.email_duenio.name }}" id="{{ clienteperitar_form.email_duenio.id_for_label }}" value="{{ clienteperitar_form.email_duenio.value }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.cuil_duenio.id_for_label }}">CUIL dueño</label>
+                        <input class="form-control" type="text" name="{{ clienteperitar_form.cuil_duenio.name }}" id="{{ clienteperitar_form.cuil_duenio.id_for_label }}" value="{{ clienteperitar_form.cuil_duenio.value }}" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="section-header text-center font-weight-bold " style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">DATOS DEL VEHÍCULO</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.vendedor.id_for_label }}">Vendedor</label>
+                <input class="form-control" type="text" id="{{ coche_form.vendedor.id_for_label }}" value="{{ coche_form.instance.vendedor.nombre }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.provincia_Radicado.id_for_label }}">Provincia Radicado</label>
+                <input class="form-control" type="text" name="{{ coche_form.provincia_Radicado.name }}" id="{{ coche_form.provincia_Radicado.id_for_label }}" value="{{ coche_form.provincia_Radicado.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.vto_de_vto_o_itv.id_for_label }}">Vto. de Vtv e ITV</label>
+                <input class="form-control" type="text" name="{{ coche_form.vto_de_vto_o_itv.name }}" id="{{ coche_form.vto_de_vto_o_itv.id_for_label }}" value="{{ fecha_vto_e_itv_formateada }}" readonly>
+              </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.patente.id_for_label }}">Patente</label>
+                <input class="form-control" type="text" name="{{ coche_form.patente.name }}" id="{{ coche_form.patente.id_for_label }}" value="{{ coche_form.patente.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.marca.id_for_label }}">Marca</label>
+                <input class="form-control" type="text" name="{{ coche_form.marca.name }}" id="{{ coche_form.marca.id_for_label }}" value="{{ coche_form.instance.marca.marca_auto}}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.modelo.id_for_label }}">Modelo</label>
+                <input class="form-control" type="text" name="{{ coche_form.modelo.name }}" id="{{ coche_form.modelo.id_for_label }}" value="{{ coche_form.modelo.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important; margin: 0 !important">
+            <div class="form-group">
+                <label for="{{ coche_form.puertas.id_for_label }}">Puertas</label>
+                <input class="form-control" type="text" name="{{ coche_form.puertas.name }}" id="{{ coche_form.puertas.id_for_label }}" value="{{ coche_form.puertas.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.man_aut.id_for_label }}">Man./Aut</label>
+                <input class="form-control" type="text" name="{{ coche_form.man_aut.name }}" id="{{ coche_form.man_aut.id_for_label }}" value="{{ coche_form.man_aut.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.combustible.id_for_label }}">Combustible</label>
+                <input class="form-control" type="text" name="{{ coche_form.combustible.name }}" id="{{ coche_form.combustible.id_for_label }}" value="{{ coche_form.combustible.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.color.id_for_label }}">Color</label>
+                <input class="form-control" type="text" name="{{ coche_form.color.name }}" id="{{ coche_form.color.id_for_label }}" value="{{ coche_form.color.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.año.id_for_label }}">Año</label>
+                <input class="form-control" type="text" name="{{ coche_form.año.name }}" id="{{ coche_form.año.id_for_label }}" value="{{ coche_form.año.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.km.id_for_label }}">Km</label>
+                <input class="form-control" type="text" name="{{ coche_form.km.name }}" id="{{ coche_form.km.id_for_label }}" value="{{ coche_form.km.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.dueño_mano.id_for_label }}">Dueño / Mano</label>
+                <input class="form-control" type="text" name="{{ coche_form.dueño_mano.name }}" id="{{ coche_form.dueño_mano.id_for_label }}" value="{{ coche_form.dueño_mano.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.ultimo_service_aceite_fecha.id_for_label }}">Service Aceite Fecha</label>
+                <input class="form-control" type="text" name="{{ coche_form.ultimo_service_aceite_fecha.name }}" id="{{ coche_form.ultimo_service_aceite_fecha.id_for_label }}" value="{{ fecha_service_aceite_formateada }}" readonly>
+              </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.ultimo_service_aceite_km.id_for_label }}">Service Aceite KM</label>
+                <input class="form-control" type="text" name="{{ coche_form.ultimo_service_aceite_km.name }}" id="{{ coche_form.ultimo_service_aceite_km.id_for_label }}" value="{{ coche_form.ultimo_service_aceite_km.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.ultimo_cambio_distribucion_fecha.id_for_label }}">Cambio Distribuccion Fecha</label>
+                <input class="form-control" type="text" name="{{ coche_form.ultimo_cambio_distribucion_fecha.name }}" id="{{ coche_form.ultimo_cambio_distribucion_fecha.id_for_label }}" value="{{ fecha_cambio_distribucion_formateada }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.ultimo_cambio_distribucion_km.id_for_label }}">Cambio Distribuccion KM</label>
+                <input class="form-control" type="text" name="{{ coche_form.ultimo_cambio_distribucion_km.name }}" id="{{ coche_form.ultimo_cambio_distribucion_km.id_for_label }}" value="{{ coche_form.ultimo_cambio_distribucion_km.value }}" readonly>
+            </div>
+        </div>
+        <div  class="col-md-12 col-sm-12 col-xs-6" style="padding: 0 !important; background-color: rgb(79, 79, 79);  text-align: center; color: white;">GNC</div>
+        <div class="col-md-4 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.gnc_vtohidraulica.id_for_label }}">GNC Vto. Hidraulica</label>
+                <input class="form-control" type="text" name="{{ coche_form.gnc_vtohidraulica.name }}" id="{{ coche_form.gnc_vtohidraulica.id_for_label }}" value="{{ fecha_gnc_vto_hidraulica_formateada }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.gnc_vtooblea.id_for_label }}">GNC Vto. Oblea</label>
+                <input class="form-control" type="text" name="{{ coche_form.gnc_vtooblea.name }}" id="{{ coche_form.gnc_vtooblea.id_for_label }}" value="{{ fecha_gnc_vto_oblea_formateada }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.gnc_metros.id_for_label }}">GNC Metros</label>
+                <input class="form-control" type="text" name="{{ coche_form.gnc_metros.name }}" id="{{ coche_form.gnc_metros.id_for_label }}" value="{{ coche_form.gnc_metros.value|default:'No posee GNC' }}" readonly>
+            </div>
+        </div>
+        <div  class="col-md-12 col-sm-12 col-xs-6" style="padding: 0 !important; background-color: rgb(79, 79, 79); text-align: center; color: white;">BATERIA</div>
+        <div class="col-md-4 col-sm-3 col-xs-6"style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.bateria_marca.id_for_label }}">Marca Bateria</label>
+                <input class="form-control" type="text" name="{{ coche_form.bateria_marca.name }}" id="{{ coche_form.bateria_marca.id_for_label }}" value="{{ coche_form.bateria_marca.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.bateria_medida.id_for_label }}">Medida Bateria</label>
+                <input class="form-control" type="text" name="{{ coche_form.bateria_medida.name }}" id="{{ coche_form.bateria_medida.id_for_label }}" value="{{ coche_form.bateria_medida.value }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-5 col-xs-6" style="padding: 0 !important;">
+            <div class="form-group">
+                <label for="{{ coche_form.bateria_ultimo_cambio.id_for_label }}">Último Cambio de Batería</label>
+                <input class="form-control" type="text" id="{{ coche_form.bateria_ultimo_cambio.id_for_label }}" 
+                    value="{% if coche_form.es_fecha_original.value %}ORIGINAL
+                           {% elif coche_form.bateria_ultimo_cambio.value %}{{ coche_form.bateria_ultimo_cambio.value|date:"d/m/Y" }}
+                           {% else %}No disponible{% endif %}" readonly>
+            </div>
+        </div>
+                
+            </div>
+        </tbody>
+    </form>
+<!-- Segundo bloque de formulario -->
+<form method="post" enctype="multipart/form-data" id="segundobloque">
+<div class="table-section">
+    <div class="section-header text-center font-weight-bold " style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">
+        INSPECCION DE CUBIERTAS
+    </div>
+    <div class="table-responsive" style="background-color: white;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="subtitulos">Insp. Cubiertas</th>
+                    <th class="subtitulos">Marca</th>
+                    <th class="subtitulos">Medidas</th>
+                    <th class="subtitulos">Vida Útil %</th>
+                    <th class="subtitulos">Gastos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Delantera dcha.</td>
+                    <td data-label="Marca"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.marca_delantera_derecha.name }}" id="{{ inspeccion_cubiertas_form.marca_delantera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.marca_delantera_derecha.value }}" readonly></td>
+                    <td data-label="Medidas"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.medidas_delantera_derecha.name }}" id="{{ inspeccion_cubiertas_form.medidas_delantera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.medidas_delantera_derecha.value }}" readonly></td>
+                    <td data-label="Vida Útil %"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.vida_util_delantera_derecha.name }}" id="{{ inspeccion_cubiertas_form.vida_util_delantera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.vida_util_delantera_derecha.value }}" readonly></td>
+                    <td data-label="Gastos"><input class="form-control gasto-subtotal" type="text" name="{{ inspeccion_cubiertas_form.gastos_delantera_derecha.name }}" id="{{ inspeccion_cubiertas_form.gastos_delantera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.gastos_delantera_derecha.value|default:'$ 0,00' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Delantera izq.</td>
+                    <td data-label="Marca"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.marca_delantera_izquierda.name }}" id="{{ inspeccion_cubiertas_form.marca_delantera_izquierda.id_for_label }}" value="{{ inspeccion_cubiertas_form.marca_delantera_izquierda.value }}" readonly></td>
+                    <td data-label="Medidas"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.medidas_delantera_izquierda.name }}" id="{{ inspeccion_cubiertas_form.medidas_delantera_izquierda.id_for_label }}" value="{{ inspeccion_cubiertas_form.medidas_delantera_izquierda.value }}" readonly></td>
+                    <td data-label="Vida Útil %"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.vida_util_delantera_izquierda.name }}" id="{{ inspeccion_cubiertas_form.vida_util_delantera_izquierda.id_for_label }}" value="{{ inspeccion_cubiertas_form.vida_util_delantera_izquierda.value }}" readonly></td>
+                    <td data-label="Gastos"><input class="form-control gasto-subtotal" type="text" name="{{ inspeccion_cubiertas_form.gastos_delantera_izquierda.name }}" id="{{ inspeccion_cubiertas_form.gastos_delantera_izquierda.id_for_label }}" value="{{ inspeccion_cubiertas_form.gastos_delantera_izquierda.value|default:'$ 0,00' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Trasera dcha.</td>
+                    <td data-label="Marca"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.marca_trasera_derecha.name }}" id="{{ inspeccion_cubiertas_form.marca_trasera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.marca_trasera_derecha.value }}" readonly></td>
+                    <td data-label="Medidas"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.medidas_trasera_derecha.name }}" id="{{ inspeccion_cubiertas_form.medidas_trasera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.medidas_trasera_derecha.value }}" readonly></td>
+                    <td data-label="Vida Útil %"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.vida_util_trasera_derecha.name }}" id="{{ inspeccion_cubiertas_form.vida_util_trasera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.vida_util_trasera_derecha.value }}" readonly></td>
+                    <td data-label="Gastos"><input class="form-control gasto-subtotal" type="text" name="{{ inspeccion_cubiertas_form.gastos_trasera_derecha.name }}" id="{{ inspeccion_cubiertas_form.gastos_trasera_derecha.id_for_label }}" value="{{ inspeccion_cubiertas_form.gastos_trasera_derecha.value|default:'$ 0,00' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Trasera izq.</td>
+                    <td data-label="Marca"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.marca_trasera_izquierda.name }}" id="{{ inspeccion_cubiertas_form.marca_trasera_izquierda.id_for_label }}" value="{{ inspeccion_cubiertas_form.marca_trasera_izquierda.value }}" readonly></td>
+                    <td data-label="Medidas"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.medidas_trasera_izquierda.name }}" id="{{ inspeccion_cubiertas_form.medidas_trasera_izquierda.id_for_label }}" value="{{ inspeccion_cubiertas_form.medidas_trasera_izquierda.value }}" readonly></td>
+                    <td data-label="Vida Útil %"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.vida_util_trasera_izquierda.name }}" id="{{ inspeccion_cubiertas_form.vida_util_trasera_izquierda.id_for_label }}" value="{{ inspeccion_cubiertas_form.vida_util_trasera_izquierda.value }}" readonly></td>
+                    <td data-label="Gastos"><input class="form-control gasto-subtotal" type="text" name="{{ inspeccion_cubiertas_form.gastos_trasera_izquierda.name }}" id="{{ inspeccion_cubiertas_form.gastos_trasera_izquierda.id_for_label }}" value="{{ inspeccion_cubiertas_form.gastos_trasera_izquierda.value|default:'$ 0,00' }}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Auxilio</td>
+                    <td data-label="Marca"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.marca_auxilio.name }}" id="{{ inspeccion_cubiertas_form.marca_auxilio.id_for_label }}" value="{{ inspeccion_cubiertas_form.marca_auxilio.value }}" readonly></td>
+                    <td data-label="Medidas"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.medidas_auxilio.name }}" id="{{ inspeccion_cubiertas_form.medidas_auxilio.id_for_label }}" value="{{ inspeccion_cubiertas_form.medidas_auxilio.value }}" readonly></td>
+                    <td data-label="Vida Útil %"><input class="form-control" type="text" name="{{ inspeccion_cubiertas_form.vida_util_auxilio.name }}" id="{{ inspeccion_cubiertas_form.vida_util_auxilio.id_for_label }}" value="{{ inspeccion_cubiertas_form.vida_util_auxilio.value }}" readonly></td>
+                    <td data-label="Gastos"><input class="form-control gasto-subtotal" type="text" name="{{ inspeccion_cubiertas_form.gastos_auxilio.name }}" id="{{ inspeccion_cubiertas_form.gastos_auxilio.id_for_label }}" value="{{ inspeccion_cubiertas_form.gastos_auxilio.value|default:'$ 0,00' }}" readonly></td>
+                </tr>
+                
+            </tbody>
+        </table>
+                <tr>
+                    <td colspan="6">
+                        <p class="subtitulos" style="margin-bottom:0px">Subtotal: </p>
+                        <input type="text" class="form-control" id="sub_total_cubiertas"  readonly>
+                    </td>
+                </tr>
+                 <tr>
+                    <td>Observaciones</td>
+                    <td rowspan="5">
+                        <textarea name="observaciones_cubiertas" disabled style="resize: none; width: 100%; height: 85px;">{{ inspeccion_cubiertas_form.observaciones_cubiertas.value }}</textarea>
+                    </td>
+                </tr>
+    </div>
+</div> 
+</form> 
+ <!-- Tercer bloque de formulario -->      
+     
+            <form method="post" enctype="multipart/form-data" id="tercerbloque">
+                {% csrf_token %} 
+                <div class="section-header" style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">CARACTERISTICAS DEL VEHÍCULO</div>
+                <div class="table-section">
+                    
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td class="form-check">
+                                    <label for="{{ Equipamiento_form.Aire_climatizador.name }}">Aire o Climatizador</label>
+                                </td>
+                                <td>
+                                    {% if equipamiento_form.Aire_climatizador.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.Aire_climatizador.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.Aire_climatizador.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.DirElectricaoHidraulica}}">Dir. Elect. o Hidr.</label></td>
+                                <td>
+                                    {% if equipamiento_form.DirElectricaoHidraulica.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.DirElectricaoHidraulica.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.DirElectricaoHidraulica.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                    <td class="form-check"><label for="{{Equipamiento_form.AlzaCristales}}">Alza Cristales</label></td>
+                                    <td style="text-align: center; padding: 0px; padding-top:10px"><input style="  padding: 100%px; max-width: 30px !important; border: none;" type="text" name="{{ equipamiento_form.AlzaCristales.name }}" id="{{equipamiento_form.AlzaCristales.id_for_label }}" value="{{ equipamiento_form.AlzaCristales.value }}" readonly></td>
+                                    <td class="form-check"><label for="{{Equipamiento_form.CierraCentralizado}}">Cierra Centralizado</label></td>
+                                    <td>
+                                        {% if equipamiento_form.CierraCentralizado.value %}
+                                            <input type="hidden" name="{{ equipamiento_form.CierraCentralizado.name }}" value="on">
+                                            <span>✔️</span>
+                                        {% else %}
+                                            <input type="hidden" name="{{ equipamiento_form.CierraCentralizado.name }}" value="">
+                                            <span>❌</span>
+                                        {% endif %}
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.TechoCorredizo}}">Techo Corredizo</label></td>
+                                <td>
+                                    {% if equipamiento_form.TechoCorredizo.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.TechoCorredizo.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.TechoCorredizo.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.CortaCorriente}}">Corta Corriente</label></td>
+                                <td>
+                                    {% if equipamiento_form.CortaCorriente.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.CortaCorriente.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.CortaCorriente.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.LlantasDeAleacion}}">Llantas de aleación</label></td>
+                                <td>
+                                    {% if equipamiento_form.LlantasDeAleacion.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.LlantasDeAleacion.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.LlantasDeAleacion.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.Airbags}}">Airbags</label></td>
+                                <td>
+                                    {% if equipamiento_form.Airbags.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.Airbags.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.Airbags.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.ABS}}">ABS</label></td>
+                                <td>
+                                    {% if equipamiento_form.ABS.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.ABS.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.ABS.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.ESP}}">ESP</label></td>
+                                <td>
+                                    {% if equipamiento_form.ESP.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.ESP.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.ESP.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.Alarma}}">Alarma</label></td>
+                                <td>
+                                    {% if equipamiento_form.Alarma.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.Alarma.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.Alarma.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.Polarizado}}">Polarizado</label></td>
+                                <td>
+                                    {% if equipamiento_form.Polarizado.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.Polarizado.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.Polarizado.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr> 
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.GatoLlave}}">Gato, Llave</label></td>
+                                <td>
+                                    {% if equipamiento_form.GatoLlave.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.GatoLlave.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.GatoLlave.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.StereoOriginal}}">Stereo Original</label></td>
+                                <td>
+                                    {% if equipamiento_form.StereoOriginal.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.StereoOriginal.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.StereoOriginal.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.EspejosElectricos}}">Espejos Eléctricos</label></td>
+                                <td>
+                                    {% if equipamiento_form.EspejosElectricos.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.EspejosElectricos.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.EspejosElectricos.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.CamaraRetroceso}}">Cámara Retroceso</label></td>
+                                <td>
+                                    {% if equipamiento_form.CamaraRetroceso.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.CamaraRetroceso.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.CamaraRetroceso.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>     
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.SensoresEst}}">Sensores est.</label></td>
+                                <td>
+                                    {% if equipamiento_form.SensoresEst.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.SensoresEst.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.SensoresEst.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.Pantalla}}">Pantalla</label></td>
+                                <td>
+                                    {% if equipamiento_form.Pantalla.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.Pantalla.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{equipamiento_form.Pantalla.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.ControlVelCrucero}}">Control Vel. Crucero</label></td>
+                                <td>
+                                    {% if equipamiento_form.ControlVelCrucero.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.ControlVelCrucero.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.ControlVelCrucero.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.FarosAntiniebla}}">Faros Antiniebla</label></td>
+                                <td>
+                                    {% if equipamiento_form.FarosAntiniebla.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.FarosAntiniebla.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.FarosAntiniebla.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.DuplicadoLlave}}">Duplicado Llave</label></td>
+                                <td>
+                                    {% if equipamiento_form.DuplicadoLlave.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.DuplicadoLlave.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.DuplicadoLlave.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.Manuales}}">Manuales</label></td>
+                                <td>
+                                    {% if equipamiento_form.Manuales.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.Manuales.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.Manuales.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.CodigoStereo}}">Código Stereo</label></td>
+                                <td>
+                                    {% if equipamiento_form.CodigoStereo.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.CodigoStereo.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.CodigoStereo.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.TuercaSeguridad}}">Tuerca Seguridad</label></td>
+                                <td>
+                                    {% if equipamiento_form.TuercaSeguridad.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.TuercaSeguridad.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.TuercaSeguridad.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.Matafuegos}}">Matafuegos</label></td>
+                                <td>
+                                    {% if equipamiento_form.Matafuegos.value %}
+                                        <input type="hidden" name="{{ equipamiento_form.Matafuegos.name }}" value="on">
+                                        <span>✔️</span>
+                                    {% else %}
+                                        <input type="hidden" name="{{ equipamiento_form.Matafuegos.name }}" value="">
+                                        <span>❌</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>    
+ <!--Cuarto Bloque Formulario-->
+           
+            <form method="post" enctype="multipart/form-data" id="cuartobloque">
+                {% csrf_token %}
+                <div class="table-section">
+                    <div class="section-header" style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">INSPECCIÓN DE PARTES</div>
+                    <table class="table table-bordered" >
+                        <thead>
+                            <tr>
+                                <th>Insp. de:</th>
+                                <th>Estado</th>
+                                <th>Gastos</th>
+                                <th>Insp. de:</th>
+                                <th>Estado</th>
+                                <th>Gastos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Carroceria General</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.carroceria_general.name }}" id="{{ inspeccion_gral_form.carroceria_general.id_for_label }}" value="{{ inspeccion_gral_form.carroceria_general.value }}" readonly></td>
+                                <td><input  style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.carroceria_general_gasto.name }}" id="{{ inspeccion_gral_form.carroceria_general_gasto.id_for_label }}" value="{{ inspeccion_gral_form.carroceria_general_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Chapa</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.chapa.name }}" id="{{ inspeccion_gral_form.chapa.id_for_label }}" value="{{ inspeccion_gral_form.chapa.value }}" readonly></td>
+                                <td><input  style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.chapa_gasto.name }}" id="{{ inspeccion_gral_form.chapa_gasto.id_for_label }}" value="{{ inspeccion_gral_form.chapa_gasto.value|default:'$ 0,00' }}" readonly></td>
+                             </tr>
+                            <tr>
+                                <td>Pintura</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.pintura.name }}" id="{{ inspeccion_gral_form.pintura.id_for_label }}" value="{{ inspeccion_gral_form.pintura.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.pintura_gasto.name }}" id="{{ inspeccion_gral_form.pintura_gasto.id_for_label }}" value="{{ inspeccion_gral_form.pintura_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Motor</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.motor.name }}" id="{{ inspeccion_gral_form.motor.id_for_label }}" value="{{ inspeccion_gral_form.motor.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.motor_gasto.name }}" id="{{ inspeccion_gral_form.motor_gasto.id_for_label }}" value="{{ inspeccion_gral_form.motor_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr> 
+                            <tr>  
+                                <td>Diferencial</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.diferencial.name }}" id="{{ inspeccion_gral_form.diferencial.id_for_label }}" value="{{ inspeccion_gral_form.diferencial.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.diferencial_gasto.name }}" id="{{ inspeccion_gral_form.diferencial_gasto.id_for_label }}" value="{{ inspeccion_gral_form.diferencial_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Embrague</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.embrague.name }}" id="{{ inspeccion_gral_form.embrague.id_for_label }}" value="{{ inspeccion_gral_form.embrague.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.embrague_gasto.name }}" id="{{ inspeccion_gral_form.embrague_gasto.id_for_label }}" value="{{ inspeccion_gral_form.embrague_gasto.value|default:'$ 0,00' }}" readonly></td>
+                             </tr>
+                            <tr>
+                                <td>Tren Delantero</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.tren_delantero.name }}" id="{{ inspeccion_gral_form.tren_delantero.id_for_label }}" value="{{ inspeccion_gral_form.tren_delantero.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.tren_delantero_gasto.name }}" id="{{ inspeccion_gral_form.tren_delantero_gasto.id_for_label }}" value="{{ inspeccion_gral_form.tren_delantero_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Tren Trasero</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.tren_trasero.name }}" id="{{ inspeccion_gral_form.tren_trasero.id_for_label }}" value="{{ inspeccion_gral_form.tren_trasero.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.tren_trasero_gasto.name }}" id="{{ inspeccion_gral_form.tren_trasero_gasto.id_for_label }}" value="{{ inspeccion_gral_form.tren_trasero_gasto.value|default:'$ 0,00' }}" readonly></td>
+                             </tr>
+                            <tr>
+                                <td>Direccion</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.direccion.name }}" id="{{ inspeccion_gral_form.direccion.id_for_label }}" value="{{ inspeccion_gral_form.direccion.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.direccion_gasto.name }}" id="{{ inspeccion_gral_form.direccion_gasto.id_for_label }}" value="{{ inspeccion_gral_form.direccion_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Frenos</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.frenos.name }}" id="{{ inspeccion_gral_form.frenos.id_for_label }}" value="{{ inspeccion_gral_form.frenos.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.frenos_gasto.name }}" id="{{ inspeccion_gral_form.frenos_gasto.id_for_label }}" value="{{ inspeccion_gral_form.frenos_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr>
+                            <tr>    
+                                <td>Amort. Tras.</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.amortiguadores_tras.name }}" id="{{ inspeccion_gral_form.amortiguadores_tras.id_for_label }}" value="{{ inspeccion_gral_form.amortiguadores_tras.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.amortiguadores_tras_gasto.name }}" id="{{ inspeccion_gral_form.amortiguadores_tras_gasto.id_for_label }}" value="{{ inspeccion_gral_form.amortiguadores_tras_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Amort. Del</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.amortiguadores_del.name }}" id="{{ inspeccion_gral_form.amortiguadores_del.id_for_label }}" value="{{ inspeccion_gral_form.amortiguadores_del.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.amortiguadores_del_gasto.name }}" id="{{ inspeccion_gral_form.amortiguadores_del_gasto.id_for_label }}" value="{{ inspeccion_gral_form.amortiguadores_del_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Arranque</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.arranque.name }}" id="{{ inspeccion_gral_form.arranque.id_for_label }}" value="{{ inspeccion_gral_form.arranque.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.arranque_gasto.name }}" id="{{ inspeccion_gral_form.arranque_gasto.id_for_label }}" value="{{ inspeccion_gral_form.arranque_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Radiadores</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.radiadores.name }}" id="{{ inspeccion_gral_form.radiadores.id_for_label }}" value="{{ inspeccion_gral_form.radiadores.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.radiadores_gasto.name }}" id="{{ inspeccion_gral_form.radiadores_gasto.id_for_label }}" value="{{ inspeccion_gral_form.radiadores_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Electricidad</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.electricidad.name }}" id="{{ inspeccion_gral_form.electricidad.id_for_label }}" value="{{ inspeccion_gral_form.electricidad.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.electricidad_gasto.name }}" id="{{ inspeccion_gral_form.electricidad_gasto.id_for_label }}" value="{{ inspeccion_gral_form.electricidad_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>A.C / Calefacción</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.aacc_calefaccion.name }}" id="{{ inspeccion_gral_form.aacc_calefaccion.id_for_label }}" value="{{ inspeccion_gral_form.aacc_calefaccion.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.aacc_calefaccion_gasto.name }}" id="{{ inspeccion_gral_form.aacc_calefaccion_gasto.id_for_label }}" value="{{ inspeccion_gral_form.aacc_calefaccion_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Radio</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.radio.name }}" id="{{ inspeccion_gral_form.radio.id_for_label }}" value="{{ inspeccion_gral_form.radio.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.radio_gasto.name }}" id="{{ inspeccion_gral_form.radio_gasto.id_for_label }}" value="{{ inspeccion_gral_form.radio_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Bateria</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.bateria.name }}" id="{{ inspeccion_gral_form.bateria.id_for_label }}" value="{{ inspeccion_gral_form.bateria.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.bateria_gasto.name }}" id="{{ inspeccion_gral_form.bateria_gasto.id_for_label }}" value="{{ inspeccion_gral_form.bateria_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Llantas</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.llantas.name }}" id="{{ inspeccion_gral_form.llantas.id_for_label }}" value="{{ inspeccion_gral_form.llantas.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.llantas_gasto.name }}" id="{{ inspeccion_gral_form.llantas_gasto.id_for_label }}" value="{{ inspeccion_gral_form.llantas_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Tasas</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.tasas.name }}" id="{{ inspeccion_gral_form.tasas.id_for_label }}" value="{{ inspeccion_gral_form.tasas.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.tasas_gasto.name }}" id="{{ inspeccion_gral_form.tasas_gasto.id_for_label }}" value="{{ inspeccion_gral_form.tasas_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Parabrisas</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.parabrisas.name }}" id="{{ inspeccion_gral_form.parabrisas.id_for_label }}" value="{{ inspeccion_gral_form.parabrisas.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.parabrisas_gasto.name }}" id="{{ inspeccion_gral_form.parabrisas_gasto.id_for_label }}" value="{{ inspeccion_gral_form.parabrisas_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Asientos</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.asientos.name }}" id="{{ inspeccion_gral_form.asientos.id_for_label }}" value="{{ inspeccion_gral_form.asientos.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.asientos_gasto.name }}" id="{{ inspeccion_gral_form.asientos_gasto.id_for_label }}" value="{{ inspeccion_gral_form.asientos_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Tapizado</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.tapizado.name }}" id="{{ inspeccion_gral_form.tapizado.id_for_label }}" value="{{ inspeccion_gral_form.tapizado.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.tapizado_gasto.name }}" id="{{ inspeccion_gral_form.tapizado_gasto.id_for_label }}" value="{{ inspeccion_gral_form.tapizado_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Volante</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.volante.name }}" id="{{ inspeccion_gral_form.volante.id_for_label }}" value="{{ inspeccion_gral_form.volante.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.volante_gasto.name }}" id="{{ inspeccion_gral_form.volante_gasto.id_for_label }}" value="{{ inspeccion_gral_form.volante_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Freno De Mano</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.freno_de_mano.name }}" id="{{ inspeccion_gral_form.freno_de_mano.id_for_label }}" value="{{ inspeccion_gral_form.freno_de_mano.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.freno_de_mano_gasto.name }}" id="{{ inspeccion_gral_form.freno_de_mano_gasto.id_for_label }}" value="{{ inspeccion_gral_form.freno_de_mano_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                <td>Bagueta</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.bagueta.name }}" id="{{ inspeccion_gral_form.bagueta.id_for_label }}" value="{{ inspeccion_gral_form.bagueta.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.bagueta_gasto.name }}" id="{{ inspeccion_gral_form.bagueta_gasto.id_for_label }}" value="{{ inspeccion_gral_form.bagueta_gasto.value|default:'$ 0,00' }}" readonly></td>
+                            </tr>
+                            <tr>
+                                <td>Moldura</td>
+                                <td><input style="background-color: white; border: none;" class="form-control" type="text" name="{{ inspeccion_gral_form.moldura.name }}" id="{{ inspeccion_gral_form.moldura.id_for_label }}" value="{{ inspeccion_gral_form.moldura.value }}" readonly></td>
+                                <td><input style="background-color: white; border: none;" class="form-control gasto-input" type="text" name="{{ inspeccion_gral_form.moldura_gasto.name }}" id="{{ inspeccion_gral_form.moldura_gasto.id_for_label }}" value="{{ inspeccion_gral_form.moldura_gasto.value|default:'$ 0,00' }}" readonly></td>
+                                
+                            </tr>
+
+                            
+                            <tr>
+                                        <td colspan="6">
+                                            <p class="subtitulos" style="margin-bottom:0px">Subtotal:</p>
+                                            <input type="text" class="form-control" id="sub_total_partes" readonly>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                     
+                                        <td rowspan="5"  colspan="6">
+                                            <p>Observaciones</p>
+                                            <textarea name="observaciones_gral" class="form-control" disabled style="resize: none; width: 100%; height: 85px;">{{ inspeccion_gral_form.observaciones_gral.value }}</textarea>
+                                        </td>
+                            <tr>
+
+                           
+                    
+                            
+                </div>
+                <div class="table-section">
+                    <div class="section-header" style="margin-top: 30px; margin-bottom: 15px;">VALORES TOTALES</div>
+                    <table class="table table-bordered precios-totales-table">
+                        <tbody>
+                           
+                            <td>Total Gastos Peritaje:</td>
+                            <td colspan="7">
+                                {{ gastos_total_form.total_gastos }}
+                            </td>
+                            <tr>
+                                <td class="precio-label">Valor de mercado</td>
+                                <td colspan="2" class="precio-value">
+                                    {{ gastos_total_form.valor_mercado }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="precio-label">Valor Info Auto</td>
+                                <td colspan="2" class="precio-value">
+                                    {{ gastos_total_form.precio_info_auto }}
+                                </td>
+                            </tr>
+                            {% if es_gerente %}
+                            <tr>
+                                <td class="precio-label">Precio Valor Toma</td>
+                                <td colspan="2" class="precio-value">
+                                    {{ gastos_total_form.precio_valor_toma }}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <input type="hidden" name="precio_valor_toma" value="" />
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+            <form method="post" enctype="multipart/form-data" id="quintobloque">
+                {% csrf_token %}
+                <div class="section-header" style="margin-top: 30px; margin-bottom: 15px;">Fotos Adjuntas</div>
+                <div class="center-carousel mb-3">
+                    <div id="carouselFotosPeritaje" class="carousel slide " data-ride="carousel">
+                      <div class="carousel-inner">
+                        {% for foto in fotos_peritaje %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                          <img src="{{ foto.foto.url }}" class="d-block img-fluid" alt="Foto del peritaje">
+                        </div>
+                        {% endfor %}
+                      </div>
+                      <a class="carousel-control-prev" href="#carouselFotosPeritaje" role="button" data-slide="prev">
+                        <span class="fas fa-arrow-left"></span>
+                        <span class="sr-only">Anterior</span>
+                      </a>
+                      <a class="carousel-control-next" href="#carouselFotosPeritaje" role="button" data-slide="next">
+                        <span class="fas fa-arrow-right"></span>
+                        <span class="sr-only">Siguiente</span>
+                      </a>
+                    </div>
+                  </div>
+                  {% if ultima_imagen_marcada %}
+                  <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <img class="img-fluid mb-3" src="{{ MEDIA_URL }}{{ ultima_imagen_marcada.ruta }}" alt="{{ ultima_imagen_marcada.nombre }}  style="display: block; margin: 0 auto;"">
+                        </div>
+                    
+                        <div class="col-md-12">
+                            <h3>Observaciones y Comentarios</h3>
+                            <p>{{ ultima_imagen_marcada.observaciones }}</p>
+                            <h4></h4>
+                        </div>
+                    </div>
+                </div>
+                
+              {% else %}
+                  <p>No hay imágenes marcadas para este peritaje.</p>
+              {% endif %}
+                  <form method="post">
+                      {% csrf_token %}
+                      {% if es_gerente %}
+                          <div class="text-center my-4">
+                              <button type="submit" name="aprobado" class="btn btn-primary btn-primary-custom" style="background-color: green">APROBAR</button>
+                              <button type="submit" name="rechazado" class="btn btn-primary btn-primary-custom" style="background-color: red">RECHAZAR</button>
+                          </div>
+                      {% endif %}
+                  </form>
+            </form>
+</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Formateo de números de teléfono
+            var phoneInputs = document.querySelectorAll(".telefono_duenio");
+            phoneInputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    let digits = input.value.replace(/\D/g, '');
+                    let formatted = '';
+                    if (digits.startsWith('549')) {
+                        digits = digits.substring(3);
+                        formatted = '+54 9 ';
+                    }
+                    if (digits.length >= 3) {
+                        formatted += '(' + digits.substring(0, 3) + ')';
+                        if (digits.length > 3) {
+                            formatted += ' ' + digits.substring(3, 6);
+                        }
+                        if (digits.length > 6) {
+                            formatted += ' ' + digits.substring(6, 10);
+                        }
+                    } else {
+                        formatted += digits;
+                    }
+                    if (input.value !== formatted) {
+                        input.value = formatted;
+                    }
+                });
+            });
+        
+            // Formateo de CUIL
+            var cuilInputs = document.querySelectorAll(".cuil-input");
+            cuilInputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    let value = input.value.replace(/\D/g, '');
+                    if (value.length > 2 && value.length <= 10) {
+                        value = value.replace(/(\d{2})(\d+)/, '$1-$2');
+                    } else if (value.length > 10) {
+                        value = value.replace(/(\d{2})(\d{8})(\d)/, '$1-$2-$3');
+                    }
+                    input.value = value;
+                });
+            });
+        
+            // Manejo del símbolo de porcentaje
+            function handlePercentageSymbol(input) {
+                var value = input.value.trim();
+                if (value !== '') {
+                    if (!value.endsWith('%')) {
+                        input.value = value.replace(/[^0-9]/g, '') + '%';
+                    }
+                } else {
+                    input.value = '';
+                }
+                if (input.value === '%' && value === '%') {
+                    input.value = '';
+                }
+            }
+        
+            // Cambio de imagen según selección de sucursal
+            const branchSelect = document.getElementById('branch');
+            const branchImage = document.getElementById('branch-image');
+            const branchImages = {
+                1: 'images/logo_blanco.png',
+                2: 'images/logo_blanco.png',
+            };
+        
+            branchSelect.addEventListener('change', function() {
+                const selectedBranch = branchSelect.value;
+                if (branchImages[selectedBranch]) {
+                    branchImage.src = branchImages[selectedBranch];
+                } else {
+                    branchImage.src = '';
+                }
+            });
+        });
+
+        function updateKMVisual(value) {
+            var kmVisualElements = document.getElementsByClassName("km-visual");
+
+            for (var i = 0; i < kmVisualElements.length; i++) {
+                var kmVisual = kmVisualElements[i];
+                if (value.trim() === "") {
+                    kmVisual.style.display = "none"; // Ocultar "KM" si no hay valor
+                } else {
+                    kmVisual.style.display = "inline"; // Mostrar "KM"
+                }
+            }
+        }
+
+        function updatePorcentajeVisual(value) {
+            var porcentajeVisualElements = document.getElementsByClassName("porcentaje-visual");
+
+            for (var i = 0; i < porcentajeVisualElements.length; i++) {
+                var porcentajeVisual = porcentajeVisualElements[i];
+                if (value.trim() === "") {
+                    porcentajeVisual.style.display = "none";
+                } else {
+                    porcentajeVisual.style.display = "inline";
+                }
+            }
+        }
+
+        //Script Kilometros 2.0
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const addKMSuffix = (inputId) => {
+                const input = document.getElementById(inputId);
+                input.addEventListener('blur', function() {
+                    let value = this.value.trim();
+                    if (value && !value.endsWith('km')) {
+                        this.value = value + ' km';
+                    }
+                });
+            };
+        
+            addKMSuffix('id_km');
+            addKMSuffix('id_service_aceite_km');
+            addKMSuffix('id_cambio_distribucion_km');
+        });
+
+        </script>
+        
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{% static 'js/script.js' %}"></script>
+
+{% endblock %}

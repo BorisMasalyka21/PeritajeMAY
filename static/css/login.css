@@ -1,0 +1,86 @@
+/* General styling for the form */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.left-container {
+    margin-right: 20px;
+}
+
+.form-container {
+    max-width: 400px;
+    width: 100%;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.logo {
+    margin-bottom: 20px;
+}
+
+.form-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.form-group label, .form-group input {
+    font-size: 14px;
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.errorlist {
+    color: red;
+    font-size: 12px;
+    margin: 5px 0;
+    list-style: none;
+    padding: 0;
+}
+
+.btn-login {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #1A1D39;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-login:hover {
+    background-color: #282c56;
+}
+
+
+@media screen and (max-width: 768px) {
+
+    
+    .left-container img{
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 320px) {
+
+    .left-container img{
+        display: none !important;
+    }
+}

@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/homes.css' %}">
+<style>
+    .btn-outline-primary{
+        background-color: #1A1D39 !important;
+        color: white;
+        border:none
+    }
+</style>
+<div class="banner">Bienvenido a tu perfil</div>
+<div class="profile-card">
+    <div class="profile-info">
+        <i class="fa fa-user fa-3x" aria-hidden="true"></i>
+        <h6>Usuario</h6>
+        <p>{{ usuario.nameuser.get_full_name|default:user.username }}</p>
+    </div>
+    {% comment %} <div class="profile-info">
+        <i class="fa fa-id-card fa-3x" aria-hidden="true"></i>
+        <h6>Nombre Completo</h6>
+        <p>{{ user.first_name }} {{ user.last_name }}</p>
+    </div> {% endcomment %}
+    <div class="profile-info">
+        <i class="fa fa-envelope fa-3x" aria-hidden="true"></i>
+        <h6>Email</h6>
+        <p>{{ user.email }}</p>
+    </div>
+    <div class="profile-info">
+        <i class="fa fa-car fa-3x" aria-hidden="true"></i>
+        <h6><a href="#peritajes" class="scroll" style="text-decoration: none; color: inherit;">Peritajes</a></h6>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="tasks-container">
+                <h3 class="tasks-title text-center" id="peritajes"> Peritajes</h3>
+                <form method="post" action="{% url 'home' %}" class="form-inline justify-content-center">
+                    {% csrf_token %}
+                    <div class="form-group mb-2">
+                        <label for="buscador" class="sr-only">Buscar por</label>
+                        <select name="buscador" id="buscador" class="form-control form-control-sm">
+                            <option value="" disabled selected>Selecciona una opción</option>
+                            <option value="nombre_entrega">Cliente</option>
+                            <option value="patente">Patente</option>
+                            <option value="modelo">Modelo</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-2 mx-sm-2">
+                        <label for="input" class="sr-only">Entrada</label>
+                        <input type="text" name="input" id="input" class="form-control form-control-sm" placeholder="Buscar..">
+                    </div>
+                    <div class="form-group mb-2 ">
+                        <button type="submit" class="btn btn-primary btn-sm " style="background-color:#1A1D39; border:none; margin-bottom: 0px !important;">
+                            <i class="fas fa-search "></i>
+                        </button>
+                    </div>
+                </form>
+                
+                
+                
+                
+                <ul class="list-group">
+                    {% for item in page_obj %}
+                    <li class="list-group-item">
+                        <div class="peritaje-info" data-peritaje-id="{{ item.peritaje.id }}">
+                            {% comment %} {{ item.peritaje.identificador}} {% endcomment %}
+                            <a href="{% url 'ver_peritaje' item.peritaje.id %}" class="badge badge-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                </svg>
+                            </a>
+                            <a href="{% url 'ver_auto' item.peritaje.id %}" class="badge badge-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-car-front" viewBox="0 0 16 16">
+                                    <path d="M4 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0m10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM4.862 4.276 3.906 6.19a.51.51 0 0 0 .497.731c.91-.073 2.35-.17 3.597-.17s2.688.097 3.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 10.691 4H5.309a.5.5 0 0 0-.447.276"/>
+                                    <path d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM4.82 3a1.5 1.5 0 0 0-1.379.91l-.792 1.847a1.8 1.8 0 0 1-.853.904.8.8 0 0 0-.43.564L1.03 8.904a1.5 1.5 0 0 0-.03.294v.413c0 .796.62 1.448 1.408 1.484 1.555.07 3.786.155 5.592.155s4.037-.084 5.592-.155A1.48 1.48 0 0 0 15 9.611v-.413q0-.148-.03-.294l-.335-1.68a.8.8 0 0 0-.43-.563 1.8 1.8 0 0 1-.853-.904l-.792-1.848A1.5 1.5 0 0 0 11.18 3z"/>
+                                </svg>
+                            </a>
+                            {% if item.peritaje.estado == "ACEPTADO" %}
+                            <a href="{% url 'imprimir' item.peritaje.id %}" class="badge badge-secondary" style="background-color: green;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                                    <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1"/>
+                                    <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                                </svg> 
+                            </a>
+                           {% endif %}
+                            <a href="{% url 'editar_peritaje' item.peritaje.id %}" class="badge badge-success">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5 a.5.5 0 0 1 .5.5v.5h.293z"/>
+                                </svg>
+                            </a>
+                            <p style="font-size:13px">{{ item.peritaje.usuario.username }} - {{ item.fecha_tasacion|date:"d/m/Y" }} - {{ item.peritaje.estado }}</p>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No hay peritajes disponibles.</li>
+                    <button class="btn btn-secondary" onclick="window.location.href='{% url 'peritaje_form_empty' %}'">Nuevo Peritaje</button>
+                    {% endfor %}
+                </ul>
+                
+                <div class="container mt-3">
+                    <div id="pagination-section" class="row">
+                        <div class="col-12 d-flex justify-content-end">
+                            <div class="pagination">
+                                <span class="step-links">
+                                    {% if page_obj.has_previous %}
+                                        <a href="?page=1#pagination-section" class="btn btn-sm btn-outline-primary">&laquo; Primera</a>
+                                        <a href="?page={{ page_obj.previous_page_number }}#pagination-section" class="btn btn-sm btn-outline-primary">Anterior</a>
+                                    {% endif %}
+                                    
+                                    {% if page_obj.has_next %}
+                                        <a href="?page={{ page_obj.next_page_number }}#pagination-section" class="btn btn-sm btn-outline-primary">Siguiente</a>
+                                        <a href="?page={{ page_obj.paginator.num_pages }}#pagination-section" class="btn btn-sm btn-outline-primary">Última &raquo;</a>
+                                    {% endif %}
+                                    <span class="current btn btn-sm btn-outline-secondary mx-1">
+                                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+  
+               
+                
+                
+                
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.pagination a').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                let url = this.href;
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(response => response.text())
+                .then(html => {
+                    let newDoc = new DOMParser().parseFromString(html, 'text/html');
+                    document.getElementById('pagination-section').innerHTML = newDoc.getElementById('pagination-section').innerHTML;
+                    window.scrollTo({
+                        top: document.getElementById('pagination-section').offsetTop,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    });
+
+
+
+    document.querySelector('.scroll').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('#peritajes').scrollIntoView({ behavior: 'smooth' });
+    });
+    
+        document.getElementById('buscador').addEventListener('change', function() {
+        let selectedValue = this.value;
+        document.getElementById('input').name = selectedValue;
+    });
+
+    .pagination .btn {
+        margin: 0 2px;
+        font-size: 13px;
+        transition: background-color 0.3s ease, color 0.3s ease; 
+        background-color: #1A1D39;
+        border: none;
+        color: white;
+    }
+    
+    .pagination .btn-outline-primary:hover {
+        background-color: #747aaf;
+    }
+    
+    .pagination .btn-outline-secondary:hover {
+        background-color: #747aaf; 
+    }
+  
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.1/html2pdf.bundle.min.js"></script>
+{% endblock %}

@@ -1,0 +1,236 @@
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1A1D39; 
+}
+.logo img {
+    max-height: 80px;
+    padding: 5px;
+    margin-left: 10px;
+}
+.welcome-text {
+    color: white; 
+    margin-right: 60px; 
+}
+body{
+    background-color: rgb(200, 200, 200);
+}
+#peritaje-info h3{
+    font-size: 10px;
+    text-align: center;
+}
+
+#primerbloque{
+    background-color: rgb(255, 255, 255);
+    padding: 15px;
+}
+#primerbloque .section-header{
+    background-color: #1A1D39;
+    color: white;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+#primerbloque label{
+    background-color: gray;
+    margin: 0px !important;
+    padding: 0px !important;
+    color: white;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;  
+}
+#primerbloque input{
+    margin: 0px !important;
+    background-color: white;
+}
+.form-group {
+    margin-bottom: 0;
+}
+.form-control {
+    margin: 0; 
+}
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+#segundobloque{
+    background-color: rgb(255, 255, 255);
+    padding: 15px;
+}
+#segundobloque .section-header{
+    background-color: #1A1D39;
+    color: white;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+#segundobloque textarea{
+    resize: none;
+}
+#tercerbloque{
+    background-color: rgb(255, 255, 255);
+    padding: 15px;
+}
+#tercerbloque .section-header{
+    background-color: #1A1D39;
+    color: white;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+#tercerbloque .table table-bordered .form-check tr td span{
+    text-align: center;
+}
+#cuartobloque{
+    background-color: rgb(255, 255, 255);
+    padding: 15px;
+}
+#cuartobloque .section-header{
+    background-color: #1A1D39;
+    color: white;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+#cuartobloque textarea{
+    resize: none;
+}
+#quintobloque{
+    background-color: rgb(255, 255, 255);
+    padding: 15px;
+}
+#quintobloque .section-header{
+    background-color: #1A1D39;
+    color: white;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+#quintobloque p{
+    border: 1px solid black !important; 
+    padding: 15px !important; 
+    height: 310px !important;
+}
+#quintobloque .center-carousel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 20px; 
+    background-color: #f8f9fa;
+    background-image: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+    border: 3px solid #dee2e6; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    overflow: hidden;
+  }
+
+  #quintobloque #carouselFotosPeritaje {
+    margin: 0 auto;
+    width: auto;
+  }
+
+  #quintobloque .carousel-inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  #quintobloque .carousel-item {
+    text-align: center; 
+  }
+
+  #quintobloque .carousel-item img {
+    max-height: 500px; 
+    object-fit: contain; 
+    margin: auto; 
+  }
+
+  #quintobloque .carousel-control-prev, .carousel-control-next {
+    width: 50px; 
+    color: black;
+  }
+  .center-td {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Opcional, si tambiÃ©n quieres centrar horizontalmente */
+}
+
+  @media (max-width: 768px) {
+    header .navigation .menu li a{
+        font-size: 12px !important;
+        
+    }
+
+    #gasto-column1{
+        width: 75px !important;
+    }
+    #gasto-column2{
+        width: 75px !important;
+    }
+    .section-header{
+        font-size: 12px !important;
+    }
+    h3{
+        font-size:20px;
+    }
+    td, td>input{
+        font-size:13px !important;
+    }
+    td, select>input{
+        font-size:10px !important;
+        padding:0% !important;
+    }
+    th{
+        font-size: 10px !important;
+        
+     
+    }
+    label{
+        
+        font-size: 12px !important;
+        margin: 2px !important;
+    }
+    input{
+        font-size: 10px !important;
+    }
+    select{
+        font-size: 12px !important;
+    }
+    p{
+        font-size: 12px !important;
+    }
+    input[type="checkbox"] {
+        width: 23px; 
+        height: 23px; 
+        margin: 2px; 
+        vertical-align: middle;
+    }
+    #id_AlzaCristales{
+        padding: 0px !important;
+        height: 23px !important;
+    }
+    .precio-label{
+        font-size: 12px !important;
+    }
+    #id_nombre_apellido_entrega{
+        font-size: 9px !important;
+        
+    }
+}
+
+
+

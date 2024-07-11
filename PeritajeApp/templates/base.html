@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="{% static 'js/script.js' %}"></script>
+</head>
+<body>
+    <style>
+        body {
+            background-color: white !important;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1A1D39;
+        }
+        
+        .navigation {
+            text-align: left;
+            margin: 7px;
+        }
+        
+        .menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .menu-link {
+            color: #fff;
+            text-decoration: none; /* Elimina el subrayado por defecto */
+        }
+        
+        .menu-link:hover, .menu-link:active {
+            text-decoration: none; /* Elimina el subrayado al pasar el mouse o hacer clic */
+        }
+        
+        .logo img {
+            height: 50px !important;
+            padding: 5px;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .menu {
+                align-items: center;
+            }
+            
+            .menu-link {
+                font-size: 14px !important;
+            }
+            .logo>img {
+                height: 50px !important;
+                padding: 5px;
+                margin-left: 10px;
+            }
+        }
+        
+        
+    </style>
+    <header class="header">
+        <div class="logo"> 
+            <img src="{% static 'images/logo_blanco.png' %}" alt="Logo" class="img-fluid">
+        </div>
+        <nav class="navigation">
+            <ul class="menu">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'home' %}" class="menu-link">Inicio</a></li>
+                    <li><a href="{% url 'peritaje_form_empty' %}" class="menu-link">Nuevo Peritaje</a></li>
+                    {% if es_gerente %}
+                        <li><a href="{% url 'register' %}" class="menu-link">Registrar Perito</a></li>
+                        <li><a href="{% url 'reporte' %}" class="menu-link">Exportar peritajes</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+ 
+        {% block content %}
+        {% endblock %}
+   
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

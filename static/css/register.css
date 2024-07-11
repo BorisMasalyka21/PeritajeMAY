@@ -1,0 +1,100 @@
+/* General styling for the form */
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.left-container {
+    margin-right: 20px;
+}
+
+.form-container {
+    max-width: 600px;
+    width: 100%;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.form-group label, .form-group input, .form-group select {
+    font-size: 14px;
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.form-group input, .form-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.form-row .form-group:last-child {
+    margin-right: 0;
+}
+
+.errorlist {
+    color: red;
+    font-size: 12px;
+    margin: 5px 0;
+    list-style: none;
+    padding: 0;
+}
+
+.btn-register {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #1A1D39;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-register:hover {
+    background-color: #282c56;
+}
+
+
+.form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+}
+
+
+@media screen and (max-width: 320px) {
+
+    .left-container img{
+        display: none !important;
+    }
+}
+

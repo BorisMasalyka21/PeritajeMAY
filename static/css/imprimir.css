@@ -1,0 +1,125 @@
+.form-group {
+    padding: 0;
+    margin: 0;
+}
+.form-group label {
+    border-radius: 0px !important;
+    display: block;
+    width: 100%;
+    background-color: #8a8a8a;
+    color: #fff;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-size: 6px
+    
+}
+.form-group input {
+    
+    border-radius: 0px !important;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 5px
+
+}
+.table{
+    margin: 0px !important;
+}
+.table-section .table thead th {
+    vertical-align: middle;
+    background-color: #8a8a8a;
+    color: white;
+    font-size: 10px
+    
+}
+
+
+
+/* Estilos para otras secciones */
+@media (max-width: 576px) {
+    .table-section .form-check-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    .table-section .form-check-container label {
+        margin-bottom: 0;
+        margin-right: 10px;
+    }
+    .table-section table,
+    .table-section thead,
+    .table-section tbody,
+    .table-section th,
+    .table-section td,
+    .table-section tr {
+        display: block;
+    }
+    .table-section thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .table-section tr {
+        margin: 0 0 1rem 0;
+    }
+    .table-section td {
+        vertical-align: middle;
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        font-size: 14px;
+        padding: 8px 5px;
+        margin-bottom: 15px;
+        width: 90%;
+        margin-left: 20px;
+    }
+    .table-section td:before {
+        
+        position: absolute;
+        top: 0;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        content: attr(data-label);
+        font-weight: bold;
+        font-size: 14px;
+    }
+}
+.subtotal {
+    width: 90%;
+    margin-left: 20px;
+}
+.subtotal-gastos {
+    width: 50%;
+    margin-left: 20px;
+}
+
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+}
+.form-column {
+    flex: 1;
+    padding: 10px;
+}
+.form-column table {
+    width: 100%;
+}
+.table td {
+    text-align: left;
+    vertical-align: middle;
+}
+.table td input[type="checkbox"] {
+    margin: auto;
+    display: block;
+}
+
+
+

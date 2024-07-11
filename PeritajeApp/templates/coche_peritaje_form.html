@@ -1,0 +1,1475 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Enlace a Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+<!-- Enlace al CSS de Bootstrap -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- Enlace a tu CSS personalizado -->
+<link rel="stylesheet" href="{% static 'css/ver_peritaje.css' %}">
+<style>
+
+    #id_fecha_tasacion, #id_fecha_recepcion, #id_receptor, #id_peritador{
+        height: 38px !important;
+    }
+    .input-container {
+        position: relative;
+    }
+    .input-container input {
+        padding-right: 30px; /* Espacio para el sufijo "km" */
+    }
+    .input-container .suffix {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none; /* No permitir interacción con el sufijo */
+        opacity: 0; /* Inicialmente oculto */
+        transition: opacity 0.3s ease; /* Transición suave de opacidad */
+    }
+    .input-container.input-focus .suffix {
+        opacity: 1; /* Mostrar cuando el campo tiene foco o contenido */
+    }
+    /* Estilos CSS para el sufijo "mts" */
+    .input-container-metros {
+        position: relative;
+    }
+    .input-container-metros input {
+        padding-right: 40px; /* Espacio para el sufijo "mts" */
+    }
+    .input-container-metros .suffix {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none; /* No permitir interacción con el sufijo */
+        opacity: 0; /* Inicialmente oculto */
+        transition: opacity 0.3s ease; /* Transición suave de opacidad */
+    }
+    .input-container-metros.input-focus .suffix {
+        opacity: 1; /* Mostrar cuando el campo tiene foco o contenido */
+    }
+    input::placeholder{
+        color: #CDCDCD !important;
+    }
+    
+    
+        @media (max-width: 768px) {
+            *{
+                font-size: 10px !important;
+            }
+            #id_carroceria_general{
+                font-size: 8px !important;
+            }
+        }
+    /* AGREGAR IMAGENES */
+
+.wide-column {
+    width: 200px; 
+}
+.inspeccion-row td {
+    height: 30px;
+}
+.form-select {
+    width: 100px;
+    border: rgb(197, 197, 197) solid 1px;
+    border-radius: 5px;
+}
+.file-upload-label input {
+    display: none;
+}
+.file-upload-label svg {
+    height: 50px;
+    fill: #1A1D39;
+    margin-bottom: 20px;
+}
+.file-upload-label {
+    cursor: pointer;
+    background-color: #ffffff;
+    padding: 30px 70px;
+    border-radius: 40px;
+    border: 2px dashed #1A1D39;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+.file-upload-label.dragover {
+    background-color: #ffffff;
+}
+.file-upload-design {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.browse-button {
+    background-color: #1A1D39;
+    padding: 5px 15px;
+    border-radius: 10px;
+    color: white;
+    transition: all 0.3s;
+}
+.browse-button:hover {
+    background-color: rgb(14, 14, 14);
+}
+.preview-container {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.preview-image-container {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+}
+.preview-image {
+    max-width: 300px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 5px;
+}
+.delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 0, 0, 0.7);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.delete-button:hover {
+    background-color: rgba(255, 0, 0, 1);
+}
+.browse-button {
+    background-color: #1A1D39;
+    padding: 5px 15px;
+    border-radius: 10px;
+    color: white;
+    transition: all 0.3s;
+}
+.browse-button:hover {
+    background-color: rgb(14, 14, 14);
+}
+.input-invalid {
+    color: red;
+}
+
+.input-valid {
+    color: black;
+}
+.container{
+    width:95%;
+}
+{% comment %} KILOMETRO {% endcomment %}
+.input-container {
+    position: relative;
+}
+.input-container input {
+    padding-right: 30px; /* Espacio para el sufijo "km" */
+}
+.input-container .suffix {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* No permitir interacción con el sufijo */
+    opacity: 0; /* Inicialmente oculto */
+    transition: opacity 0.3s ease; /* Transición suave de opacidad */
+}
+.input-container.input-focus .suffix {
+    opacity: 1; /* Mostrar cuando el campo tiene foco o contenido */
+}
+{% comment %} COLOR PARA CAMPOS QUE NO DEBEN TILDARSE {% endcomment %}
+.dark-input {
+    background-color:#e8ecef !important;
+    color: #e8ecef!important;
+    cursor: not-allowed;
+}
+.disabled-background {
+    background-color: #e8ecef  !important;
+    color:#e8ecef !important;
+}
+</style>
+
+<div class="container">
+   <h3 class="d-flex justify-content-center m-3">PERITAJE AUTOMOTOR</h3>
+<form method="post" enctype="multipart/form-data" style=" max-width: 1800px;">  
+    {% csrf_token %}
+   
+    <div id="primerbloque">
+        {% csrf_token %}
+        <div class="error-messages">
+            {% for form_name, form_errors in errors.items %}
+                <h3>Errores en el formulario {{ form_name }}:</h3>
+                <ul>
+                    {% for field, error_list in form_errors.items %}
+                        <li>{{ field }}: {{ error_list|join:", " }}</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </div>
+        <!-- Primer bloque de formulario -->
+        <tbody>
+            <div class="form-section">
+                <div class="section-header text-center font-weight-bold " style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">DATOS DEL CLIENTE</div>
+            <div class="row">
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important; margin-bottom: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.fecha_tasacion.id_for_label }}">Fecha Tasacion</label>
+                        {{ coche_form.fecha_tasacion }}
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.peritador.id_for_label }}">Perito</label>
+                        <input class="form-control" type="text" name="{{ coche_form.peritador.name }}" id="{{ coche_form.peritador.id_for_label }}" value="{{ user.get_full_name|default:user.username }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group ">
+                        <label for="{{ coche_form.fecha_recepcion.id_for_label }}">Fecha Recepción</label>
+                        {{ coche_form.fecha_recepcion }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6 " style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.receptor.id_for_label }}">Receptor</label>
+                        {{ coche_form.receptor }}
+                    </div>
+                  </div>                  
+            </div>
+            <div class="row">
+            <div class="col-md-4 col-sm-4 col-xs-7" style="padding: 0 !important; margin-bottom: 0 !important">
+                <div class="form-group">
+                    <label for="unidad_negocio">Unidad de Negocio</label>
+                    <select class="form-control" id="unidad_negocio" name="unidad_negocio" required>
+                        <option value="" disabled selected>Seleccionar</option>
+                        {% for unidad in unidades_negocio %}
+                            <option value="{{ unidad.id }}">{{ unidad.unidad }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-7" style="padding: 0 !important; margin-bottom: 0 !important">
+                <div class="form-group">
+                    <label for="id_branch">Sucursal</label>
+                    <select class="form-control" id="id_branch" name="branch" readonly>
+                        <option value="{{ usuario.branch.id }}" selected>{{ usuario.branch.name }}</option>
+                    </select>
+                </div>
+            </div>
+
+             {% comment %} CHECK CIENTE DUEÑO {% endcomment %}
+            <div class="col-md-4 col-sm-4 col-xs-7" style="padding: 0 !important; margin-bottom: 0 !important">
+                <div class="form-group">
+                    <div class="form-check" style="padding: 0px !important;">
+                        <label class="form-check-label" for="toggleEntrega">No es titular<input type="checkbox" class="form-check-input" id="toggleEntrega" onclick="toggleEntregaFields()" style="height: 15px !important;"></label>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 col-sm-12 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.nombre_apellido_entrega.id_for_label }}">Nombre y Apellido</label>
+                        {{ clienteperitar_form.nombre_apellido_entrega }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.telefono_entrega.id_for_label }}">Telefono</label>
+                        {{ clienteperitar_form.telefono_entrega }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.email_entrega.id_for_label }}">Email</label>
+                        {{ clienteperitar_form.email_entrega }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.cuil_entrega.id_for_label }}">CUIL</label>
+                        {{ clienteperitar_form.cuil_entrega }}
+                        <small id="cuil-entrega-error" class="form-text text-danger" style="display:none;">CUIL inválido</small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-12 col-xs-6 entrega-field" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.nombre_apellido_duenio.id_for_label }}">Nombre y Apellido dueño</label>
+                        {{ clienteperitar_form.nombre_apellido_duenio }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 entrega-field" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.telefono_duenio.id_for_label }}">Telefono dueño</label>
+                        {{ clienteperitar_form.telefono_duenio }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 entrega-field" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.email_duenio.id_for_label }}">Email dueño</label>
+                        {{ clienteperitar_form.email_duenio }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 entrega-field" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ clienteperitar_form.cuil_duenio.id_for_label }}">CUIL dueño</label>
+                        {{ clienteperitar_form.cuil_duenio }}
+                        <small id="cuil-duenio-error" class="form-text text-danger" style="display:none;">CUIL inválido</small>
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="section-header text-center font-weight-bold " style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">DATOS DEL VEHÍCULO</div>
+    </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <label for="{{ coche_form.vendedor.id_for_label }}">Vendedor</label>
+                     {{ coche_form.vendedor }}
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.provincia_Radicado.id_for_label }}">Provincia Radicado</label>
+                        {{ coche_form.provincia_Radicado }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="toggleITV">Tiene ITV o VTV? <input type="checkbox" id="toggleITV" onclick="toggleITVFields()" style="height: 15px !important;"></label>
+                        
+                    </div>
+                    <div class="form-group itv-field">
+                        <label for="{{ coche_form.vto_de_vto_o_itv.id_for_label }}">Vto:</label>
+                        {{ coche_form.vto_de_vto_o_itv }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.patente.id_for_label }}">Patente</label>
+                        {{ coche_form.patente }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.marca.id_for_label }}">Marca</label>
+                        {{ coche_form.marca }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.modelo.id_for_label }}">Modelo</label>
+                        {{ coche_form.modelo }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important; margin: 0 !important">
+                    <div class="form-group">
+                        <label for="{{ coche_form.puertas.id_for_label }}">Puertas</label>
+                        {{ coche_form.puertas }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.man_aut.id_for_label }}">Man./Aut</label>
+                        {{ coche_form.man_aut }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.combustible.id_for_label }}">Combustible</label>
+                        {{ coche_form.combustible }}
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.color.id_for_label }}">Color</label>
+                        {{ coche_form.color }}
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.año.id_for_label }}">Año</label>
+                        {{ coche_form.año }}
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.km.id_for_label }}">Km</label>
+                        {{ coche_form.km }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.dueño_mano.id_for_label }}">Dueño / Mano</label>
+                        {{ coche_form.dueño_mano }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.ultimo_service_aceite_fecha.id_for_label }}">Service Aceite Fecha</label>
+                        {{ coche_form.ultimo_service_aceite_fecha }}
+                      </div>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.ultimo_service_aceite_km.id_for_label }}">Service Aceite KM</label>
+                        {{ coche_form.ultimo_service_aceite_km }}
+                </div>
+            </div>
+                <div class="col-md-3 col-sm-6 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.ultimo_cambio_distribucion_fecha.id_for_label }}">Cambio Distribuccion Fecha</label>
+                        {{ coche_form.ultimo_cambio_distribucion_fecha }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.ultimo_cambio_distribucion_km.id_for_label }}">Cambio Distribuccion KM</label>
+                        {{ coche_form.ultimo_cambio_distribucion_km }}
+                    </div>
+                </div>
+                <div  class="col-md-12 col-sm-12 col-xs-6" style="padding: 0 !important; background-color: rgb(79, 79, 79);  text-align: center; color: white;">GNC</div>
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.gnc_vtohidraulica.id_for_label }}">GNC Vto. Hidraulica</label>
+                        {{ coche_form.gnc_vtohidraulica }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.gnc_vtooblea.id_for_label }}">GNC Vto. Oblea</label>
+                        {{ coche_form.gnc_vtooblea }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.gnc_metros.id_for_label }}">GNC Metros</label>
+                        {{ coche_form.gnc_metros }}
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.gnc_generacion.id_for_label }}">GNC Generacion</label>
+                        {{ coche_form.gnc_generacion }}
+                    </div>
+                </div>
+                <div  class="col-md-12 col-sm-12 col-xs-6" style="padding: 0 !important; background-color: rgb(79, 79, 79); text-align: center; color: white;">BATERIA</div>
+                <div class="col-md-4 col-sm-4 col-xs-6"style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.bateria_marca.id_for_label }}">Marca Bateria</label>
+                        {{ coche_form.bateria_marca }}
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.bateria_medida.id_for_label }}">Medida Bateria</label>
+                        {{ coche_form.bateria_medida }}
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-6" style="padding: 0 !important;">
+                    <div class="form-group">
+                        <label for="{{ coche_form.bateria_ultimo_cambio.id_for_label }}">Último Cambio Batería</label>
+                        {{ coche_form.bateria_ultimo_cambio }}
+                    </div>
+                </div>
+                
+            </div>
+        </tbody>
+    </div>
+<!-- Segundo bloque de formulario -->
+<div id="segundobloque">
+<div class="table-section">
+    <div class="section-header text-center font-weight-bold " style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">
+        INSPECCIÓN DE CUBIERTAS
+    </div>
+    <div class="table-responsive" style="background-color: white;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="subtitulos">Insp. Cubiertas</th>
+                    <th class="subtitulos col-3">Marca</th>
+                    <th>Medidas |   Aplicar a todas <input type="checkbox" id="applyAll" onchange="applyToAll()"/></th>
+                    <th class="subtitulos">Vida Útil %</th>
+                    <th class="subtitulos">Gastos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Delantera dcha.</td>
+                    <td data-label="Marca">{{ inspeccion_cubiertas_form.marca_delantera_derecha }}</td>
+                    <td data-label="Medidas">{{ inspeccion_cubiertas_form.medidas_delantera_derecha }}</td>
+                    <td data-label="Vida Útil %">{{ inspeccion_cubiertas_form.vida_util_delantera_derecha }}</td>
+                    <td data-label="Gastos">{{ inspeccion_cubiertas_form.gastos_delantera_derecha }}</td>
+                </tr>
+                <tr>
+                    <td>Delantera izq.</td>
+                    <td data-label="Marca">{{ inspeccion_cubiertas_form.marca_delantera_izquierda }}</td>
+                    <td data-label="Medidas">{{ inspeccion_cubiertas_form.medidas_delantera_izquierda }}</td>
+                    <td data-label="Vida Útil %">{{ inspeccion_cubiertas_form.vida_util_delantera_izquierda }}</td>
+                    <td data-label="Gastos">{{ inspeccion_cubiertas_form.gastos_delantera_izquierda }}</td>
+                </tr>
+                <tr>
+                    <td>Trasera dcha.</td>
+                    <td data-label="Marca">{{ inspeccion_cubiertas_form.marca_trasera_derecha }}</td>
+                    <td data-label="Medidas">{{ inspeccion_cubiertas_form.medidas_trasera_derecha }}</td>
+                    <td data-label="Vida Útil %">{{ inspeccion_cubiertas_form.vida_util_trasera_derecha }}</td>
+                    <td data-label="Gastos">{{ inspeccion_cubiertas_form.gastos_trasera_derecha }}</td>
+                </tr>
+                <tr>
+                    <td>Trasera izq.</td>
+                    <td data-label="Marca">{{ inspeccion_cubiertas_form.marca_trasera_izquierda }}</td>
+                    <td data-label="Medidas">{{ inspeccion_cubiertas_form.medidas_trasera_izquierda }}</td>
+                    <td data-label="Vida Útil %">{{ inspeccion_cubiertas_form.vida_util_trasera_izquierda }}</td>
+                    <td data-label="Gastos">{{ inspeccion_cubiertas_form.gastos_trasera_izquierda }}</td>
+                </tr>
+                <tr>
+                    <td>Auxilio</td>
+                    <td data-label="Marca">{{ inspeccion_cubiertas_form.marca_auxilio }}</td>
+                    <td data-label="Medidas">{{ inspeccion_cubiertas_form.medidas_auxilio }}</td>
+                    <td data-label="Vida Útil %">{{ inspeccion_cubiertas_form.vida_util_auxilio }}</td>
+                    <td data-label="Gastos">{{ inspeccion_cubiertas_form.gastos_auxilio }}</td>
+                </tr>
+                
+            </tbody>
+        </table>
+                <tr>
+                    <td colspan="6">
+                        <p class="subtitulos" style="margin-bottom:0px">Subtotal gastos Cubiertas: </p>
+                        <input type="text" class="form-control" id="sub_total_cubiertas"  readonly>
+                    </td>
+                </tr>
+                 <tr>
+                    <td>Observaciones</td>
+                    <td rowspan="5" class="col-observaciones">
+                        <div>{{ inspeccion_cubiertas_form.observaciones_cubiertas }}</div>
+                    </td>
+                </tr>
+    </div>
+</div> 
+</div> 
+ <!-- Tercer bloque de formulario -->      
+     
+            <div id="tercerbloque">
+                {% csrf_token %} 
+                <div class="section-header font-weight-bold" style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">CARACTERÍSTICAS DEL VEHÍCULO</div>
+                <div class="table-section">
+                    
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td class="form-check">
+                                    <label for="{{ Equipamiento_form.Aire_climatizador.name }}">Aire o Climatizador</label>
+                                </td>
+                                <td>
+                                    {{equipamiento_form.Aire_climatizador}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.DirElectricaoHidraulica}}">Dir. Elect. o Hidr.</label></td>
+                                <td>
+                                    {{equipamiento_form.DirElectricaoHidraulica}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check" ><label for="{{Equipamiento_form.AlzaCristales}}">Alza Cristales (2 o 4)</label></td>
+                                <td style="text-align: center; padding: 0px; padding:4px" id="selectAlza">{{equipamiento_form.AlzaCristales}}</td>
+                                    <td class="form-check"><label for="{{Equipamiento_form.CierraCentralizado}}">Cierra Centralizado</label></td>
+                                    <td>
+                                        {{equipamiento_form.CierraCentralizado}}
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.TechoCorredizo}}">Techo Corredizo</label></td>
+                                <td>
+                                    {{equipamiento_form.TechoCorredizo}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.CortaCorriente}}">Corta Corriente</label></td>
+                                <td>
+                                    {{equipamiento_form.CortaCorriente}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.LlantasDeAleacion}}">Llantas de aleación</label></td>
+                                <td>
+                                    {{equipamiento_form.LlantasDeAleacion}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.Airbags}}">Airbags</label></td>
+                                <td>
+                                    {{equipamiento_form.Airbags}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.ABS}}">ABS</label></td>
+                                <td>
+                                    {{equipamiento_form.ABS}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.ESP}}">ESP</label></td>
+                                <td>
+                                    {{equipamiento_form.ESP}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.Alarma}}">Alarma</label></td>
+                                <td>
+                                    {{equipamiento_form.Alarma}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.Polarizado}}">Polarizado</label></td>
+                                <td>
+                                    {{equipamiento_form.Polarizado}}
+                                </td>
+                            </tr> 
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.GatoLlave}}">Gato, Llave</label></td>
+                                <td>
+                                    {{equipamiento_form.GatoLlave}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.StereoOriginal}}">Stereo Original</label></td>
+                                <td>
+                                    {{equipamiento_form.StereoOriginal}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.EspejosElectricos}}">Espejos Eléctricos</label></td>
+                                <td>
+                                    {{equipamiento_form.EspejosElectricos}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.CamaraRetroceso}}">Cámara Retroceso</label></td>
+                                <td>
+                                    {{equipamiento_form.CamaraRetroceso}}
+                                </td>
+                            </tr>     
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.SensoresEst}}">Sensores est.</label></td>
+                                <td>
+                                    {{equipamiento_form.SensoresEst}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.Pantalla}}">Pantalla</label></td>
+                                <td>
+                                    {{equipamiento_form.Pantalla}}
+                                </td>
+                            </tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.ControlVelCrucero}}">Control Vel. Crucero</label></td>
+                                <td>
+                                    {{equipamiento_form.ControlVelCrucero}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.FarosAntiniebla}}">Faros Antiniebla</label></td>
+                                <td>
+                                    {{equipamiento_form.FarosAntiniebla}}
+                                </td>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.DuplicadoLlave}}">Duplicado Llave</label></td>
+                                <td>
+                                    {{equipamiento_form.DuplicadoLlave}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.Manuales}}">Manuales</label></td>
+                                <td>
+                                    {{equipamiento_form.Manuales}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.CodigoStereo}}">Código Stereo</label></td>
+                                <td>
+                                    {{equipamiento_form.CodigoStereo}}
+                                </td>
+                                <td class="form-check"><label for="{{Equipamiento_form.TuercaSeguridad}}">Tuerca Seguridad</label></td>
+                                <td>
+                                    {{equipamiento_form.TuercaSeguridad}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-check"><label for="{{Equipamiento_form.Matafuegos}}">Matafuegos</label></td>
+                                <td>
+                                    {{equipamiento_form.Matafuegos}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>    
+ <!--Cuarto Bloque Formulario-->
+           
+            <div id="cuartobloque">
+                {% csrf_token %}
+                <div class="table-section">
+                    <div class="section-header font-weight-bold" style="background-color: #1A1D39; color: white; text-align: center; padding-top: 15px; padding-bottom: 15px;">INSPECCIÓN DE PARTES</div>
+                    <table class="table table-bordered" >
+                        <thead>
+                            <tr>
+                                <th>Insp. de:</th>
+                                <th>Estado</th>
+                                <th>Gastos</th>
+                                <th>Insp. de:</th>
+                                <th>Estado</th>
+                                <th>Gastos</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Carrocería General</td>
+                                <td>{{ inspeccion_gral_form.carroceria_general }}</td>
+                                <td>{{ inspeccion_gral_form.carroceria_general_gasto }}</td>
+                                <td>Chapa</td>
+                                <td>{{ inspeccion_gral_form.chapa }}</td>
+                                <td>{{ inspeccion_gral_form.chapa_gasto }}</td>
+                                
+                            </tr>
+                            <tr>
+                                <td>Pintura</td>
+                                <td>{{ inspeccion_gral_form.pintura }}</td>
+                                <td>{{ inspeccion_gral_form.pintura_gasto }}</td>
+                                <td>Motor</td>
+                                <td>{{ inspeccion_gral_form.motor }}</td>
+                                <td>{{ inspeccion_gral_form.motor_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Diferencial</td>
+                                <td>{{ inspeccion_gral_form.diferencial }}</td>
+                                <td>{{ inspeccion_gral_form.diferencial_gasto }}</td>
+                                <td>Embrague</td>
+                                <td>{{ inspeccion_gral_form.embrague }}</td>
+                                <td>{{ inspeccion_gral_form.embrague_gasto }}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Tren Delantero</td>
+                                <td>{{ inspeccion_gral_form.tren_delantero }}</td>
+                                <td>{{ inspeccion_gral_form.tren_delantero_gasto }}</td>
+                                <td>Tren Trasero</td>
+                                <td>{{ inspeccion_gral_form.tren_trasero }}</td>
+                                <td>{{ inspeccion_gral_form.tren_trasero_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Dirección</td>
+                                <td>{{ inspeccion_gral_form.direccion }}</td>
+                                <td>{{ inspeccion_gral_form.direccion_gasto }}</td>
+                                <td>Frenos</td>
+                                <td>{{ inspeccion_gral_form.frenos }}</td>
+                                <td>{{ inspeccion_gral_form.frenos_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Amortiguadores Tras.</td>
+                                <td>{{ inspeccion_gral_form.amortiguadores_tras }}</td>
+                                <td>{{ inspeccion_gral_form.amortiguadores_tras_gasto }}</td>
+                                <td>Amortiguadores Del</td>
+                                <td>{{ inspeccion_gral_form.amortiguadores_del }}</td>
+                                <td>{{ inspeccion_gral_form.amortiguadores_del_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Arranque</td>
+                                <td>{{ inspeccion_gral_form.arranque }}</td>
+                                <td>{{ inspeccion_gral_form.arranque_gasto }}</td>
+                                <td>Radiadores</td>
+                                <td>{{ inspeccion_gral_form.radiadores }}</td>
+                                <td>{{ inspeccion_gral_form.radiadores_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Electricidad</td>
+                                <td>{{ inspeccion_gral_form.electricidad }}</td>
+                                <td>{{ inspeccion_gral_form.electricidad_gasto }}</td>
+                                <td>A.C / Calefacción</td>
+                                <td>{{ inspeccion_gral_form.aacc_calefaccion }}</td>
+                                <td>{{ inspeccion_gral_form.aacc_calefaccion_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Radio</td>
+                                <td>{{ inspeccion_gral_form.radio }}</td>
+                                <td>{{ inspeccion_gral_form.radio_gasto }}</td>
+                                <td>Batería</td>
+                                <td>{{ inspeccion_gral_form.bateria }}</td>
+                                <td>{{ inspeccion_gral_form.bateria_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Llantas</td>
+                                <td>{{ inspeccion_gral_form.llantas }}</td>
+                                <td>{{ inspeccion_gral_form.llantas_gasto }}</td>
+                                <td>Tasas</td>
+                                <td>{{ inspeccion_gral_form.tasas }}</td>
+                                <td>{{ inspeccion_gral_form.tasas_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Parabrisas</td>
+                                <td>{{ inspeccion_gral_form.parabrisas }}</td>
+                                <td>{{ inspeccion_gral_form.parabrisas_gasto }}</td>
+                                <td>Asientos</td>
+                                <td>{{ inspeccion_gral_form.asientos }}</td>
+                                <td>{{ inspeccion_gral_form.asientos_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tapizado</td>
+                                <td>{{ inspeccion_gral_form.tapizado }}</td>
+                                <td>{{ inspeccion_gral_form.tapizado_gasto }}</td>
+                                <td>Volante</td>
+                                <td>{{ inspeccion_gral_form.volante }}</td>
+                                <td>{{ inspeccion_gral_form.volante_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Freno de Mano</td>
+                                <td>{{ inspeccion_gral_form.freno_de_mano }}</td>
+                                <td>{{ inspeccion_gral_form.freno_de_mano_gasto }}</td>
+                                <td>Bagueta</td>
+                                <td>{{ inspeccion_gral_form.bagueta }}</td>
+                                <td>{{ inspeccion_gral_form.bagueta_gasto }}</td>
+                            </tr>
+                            <tr>
+                                <td>Moldura</td>
+                                <td>{{ inspeccion_gral_form.moldura }}</td>
+                                <td>{{ inspeccion_gral_form.moldura_gasto }}</td>
+                            </tr>
+                            
+                    </table>
+                    <tr>
+                        <td class="precio-label">Subtotal:</td>
+                         <td >
+                             <input type="text" class="form-control precio-input" id="sub_total_partes" readonly>
+                         </td>
+                     </tr> 
+                    <tr>
+                        <td>Observaciones</td>
+                        <td rowspan="5" class="col-observaciones">
+                            <div>{{ inspeccion_gral_form.observaciones_gral }}</div>
+                        </td>
+                    </tr>
+                   
+                </div>
+                <div class="table-section">
+                    <div class="section-header font-weight-bold" style="margin-top: 30px; margin-bottom: 15px;">PRECIOS TOTALES</div>
+                    <table class="table table-bordered precios-totales-table">
+                        <tbody>
+                           
+                            <td>Total Gastos Peritaje:</td>
+                            <td colspan="7">
+                                {{ gastos_total_form.total_gastos }}
+                            </td>
+                            <tr>
+                                <td class="precio-label">Valor de mercado</td>
+                                <td colspan="2" class="precio-value">
+                                    {{ gastos_total_form.valor_mercado }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="precio-label">Valor Info Auto</td>
+                                <td colspan="2" class="precio-value">
+                                    {{ gastos_total_form.precio_info_auto }}
+                                </td>
+                            </tr>
+                            {% if es_gerente %}
+                            <tr>
+                                <td class="precio-label">Precio Valor Toma</td>
+                                <td colspan="2" class="precio-value">
+                                    {{ gastos_total_form.precio_valor_toma }}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <input type="hidden" name="precio_valor_toma" value="" />
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div> 
+            <div class="container" style="display: flex; justify-content: center; background-color: white;">
+                <label for="id_fotos" class="file-upload-label" id="drop-area">
+                    <div class="file-upload-design">
+                        <svg viewBox="0 0 640 512" height="1em">
+                            <path d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-217c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 10.7 24 24 24s24-10.7 24-24V257.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0l-80 80z"></path>
+                        </svg>
+                        <p>Arrastrá la imagen</p>
+                        <p>o</p>
+                        <span class="browse-button">Buscar Archivos</span>
+                    </div>
+                    <input type="file" name="fotos" id="id_fotos" multiple required>
+                </label>
+            </div>
+            <div id="preview" class="preview-container"></div>
+            <div id="error-message" style="color: red; text-align: center; display: none;">Por favor, sube al menos una imagen.</div>
+            <div class="text-center my-4">
+                <button style="background-color: #1A1D39; border:none;" type="submit" class="btn btn-primary btn-primary-custom" style="margin-bottom: 20px;" id="next-button">SIGUIENTE</button>
+            </div>
+               
+               
+ </form> 
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Formateo de números de teléfono
+        var phoneInputs = document.querySelectorAll(".telefono_duenio");
+        phoneInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                let digits = input.value.replace(/\D/g, '');
+                let formatted = '';
+                if (digits.startsWith('549')) {
+                    digits = digits.substring(3);
+                    formatted = '+54 9 ';
+                }
+                if (digits.length >= 3) {
+                    formatted += '(' + digits.substring(0, 3) + ')';
+                    if (digits.length > 3) {
+                        formatted += ' ' + digits.substring(3, 6);
+                    }
+                    if (digits.length > 6) {
+                        formatted += ' ' + digits.substring(6, 10);
+                    }
+                } else {
+                    formatted += digits;
+                }
+                if (input.value !== formatted) {
+                    input.value = formatted;
+                }
+            });
+        });
+    
+        // Formateo de CUIL
+        var cuilInputs = document.querySelectorAll(".cuil-input");
+        cuilInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                let value = input.value.replace(/\D/g, '');
+                if (value.length > 2 && value.length <= 10) {
+                    value = value.replace(/(\d{2})(\d+)/, '$1-$2');
+                } else if (value.length > 10) {
+                    value = value.replace(/(\d{2})(\d{8})(\d)/, '$1-$2-$3');
+                }
+                input.value = value;
+            });
+        });
+    
+       
+        // Cambio de imagen según selección de sucursal
+        const branchSelect = document.getElementById('branch');
+        const branchImage = document.getElementById('branch-image');
+        const branchImages = {
+            1: 'images/logo_blanco.png',
+            2: 'images/logo_blanco.png',
+        };
+    
+        branchSelect.addEventListener('change', function() {
+            const selectedBranch = branchSelect.value;
+            if (branchImages[selectedBranch]) {
+                branchImage.src = branchImages[selectedBranch];
+            } else {
+                branchImage.src = '';
+            }
+        });
+    });
+   {% comment %}  function updateKMVisual(value) {
+        var kmVisualElements = document.getElementsByClassName("km-visual");
+
+        for (var i = 0; i < kmVisualElements.length; i++) {
+            var kmVisual = kmVisualElements[i];
+            if (value.trim() === "") {
+                kmVisual.style.display = "none"; // Ocultar "KM" si no hay valor
+            } else {
+                kmVisual.style.display = "inline"; // Mostrar "KM"
+            }
+        }
+    } {% endcomment %}
+    {% comment %} CHECKBOX DE CLIENTE DUPLICADOS {% endcomment %}
+
+    function toggleEntregaFields() {
+        var checkBox = document.getElementById("toggleEntrega");
+        var entregaFields = document.querySelectorAll(".entrega-field");
+
+        if (checkBox.checked) {
+            entregaFields.forEach(function(field) {
+                field.style.display = "block";
+            });
+        } else {
+            entregaFields.forEach(function(field) {
+                field.style.display = "none";
+            });
+        }
+    }
+
+    // Inicializa el estado de los campos al cargar la página
+    document.addEventListener("DOMContentLoaded", function() {
+        toggleEntregaFields();
+    });
+    </script>
+
+{% comment %} MARCA DE CUBIERTA {% endcomment %}
+  <script type="text/javascript">
+        function toggleObservaciones() {
+            var fechaInput = document.getElementById('{{ coche_form.bateria_ultimo_cambio.id_for_label }}');
+            var observacionesInput = document.getElementById('{{ inspeccion_cubiertas_form.observaciones_cubiertas.id_for_label }}');
+            var marcaInputs = [
+                document.getElementById('{{ inspeccion_cubiertas_form.marca_delantera_derecha.id_for_label }}'),
+                document.getElementById('{{ inspeccion_cubiertas_form.marca_delantera_izquierda.id_for_label }}'),
+                document.getElementById('{{ inspeccion_cubiertas_form.marca_trasera_derecha.id_for_label }}'),
+                document.getElementById('{{ inspeccion_cubiertas_form.marca_trasera_izquierda.id_for_label }}'),
+                document.getElementById('{{ inspeccion_cubiertas_form.marca_auxilio.id_for_label }}')
+            ];
+    
+            var otherSelected = marcaInputs.some(function(input) {
+                return input.value === 'Otras';
+            });
+    
+            if (!fechaInput.value || otherSelected) {
+                observacionesInput.required = true; 
+                observacionesInput.setCustomValidity('Pofavor indique la marca de Cubierta'); 
+            } else {
+                observacionesInput.required = false; 
+                observacionesInput.setCustomValidity(''); 
+            }
+        }
+        window.onload = function() {
+            toggleObservaciones();
+        };
+        document.getElementById('{{ coche_form.bateria_ultimo_cambio.id_for_label }}').addEventListener('input', toggleObservaciones);
+        var marcaInputs = [
+            document.getElementById('{{ inspeccion_cubiertas_form.marca_delantera_derecha.id_for_label }}'),
+            document.getElementById('{{ inspeccion_cubiertas_form.marca_delantera_izquierda.id_for_label }}'),
+            document.getElementById('{{ inspeccion_cubiertas_form.marca_trasera_derecha.id_for_label }}'),
+            document.getElementById('{{ inspeccion_cubiertas_form.marca_trasera_izquierda.id_for_label }}'),
+            document.getElementById('{{ inspeccion_cubiertas_form.marca_auxilio.id_for_label }}')
+        ];
+        marcaInputs.forEach(function(input) {
+            input.addEventListener('change', toggleObservaciones);
+        });
+    
+   
+        document.getElementById('{{ inspeccion_cubiertas_form.observaciones_cubiertas.id_for_label }}').addEventListener('input', function() {
+            this.setCustomValidity(''); 
+        });
+
+
+       //BATERIA ULTIMO CAMBIO
+        function handleOriginalCheckbox(checkbox) {
+            const dateInput = document.getElementById('{{ coche_form.bateria_ultimo_cambio.id_for_label }}');
+            if (checkbox.checked) {
+                dateInput.value = ''; 
+                dateInput.disabled = true; 
+            } else {
+                dateInput.disabled = false; 
+            }
+        };
+
+
+        //GNC OPCIONAL
+        document.addEventListener('DOMContentLoaded', function() {
+            // Función para manejar el campo de GNC Metros
+            const handleInputMetros = (event) => {
+                let input = event.target;
+                let value = input.value.trim();
+                if (value.length > 0) {
+                    input.parentNode.classList.add('input-focus'); 
+                } else {
+                    input.parentNode.classList.remove('input-focus'); 
+                }
+            };
+        
+            // Manejo del campo de GNC Metros
+            const gncMetrosInput = document.getElementById('id_gnc_metros');
+            if (gncMetrosInput) {
+                const gncMetrosInputContainer = document.createElement('div');
+                gncMetrosInputContainer.classList.add('input-container-metros');
+                gncMetrosInput.parentNode.insertBefore(gncMetrosInputContainer, gncMetrosInput);
+                gncMetrosInputContainer.appendChild(gncMetrosInput);
+        
+                const gncMetrosSuffix = document.createElement('span');
+                gncMetrosSuffix.classList.add('suffix');
+                gncMetrosSuffix.textContent = ' mts'; // Sufijo visual "mts"
+                gncMetrosInputContainer.appendChild(gncMetrosSuffix);
+        
+                gncMetrosInput.addEventListener('input', handleInputMetros);
+            }
+        
+            // Manejo de campos de combustible y GNC
+            const combustibleSelect = document.querySelector('.combustible-select');
+            const gncFields = document.querySelectorAll('.gnc-field');
+        
+            function toggleGncFields() {
+                if (combustibleSelect.value === 'GNC') {
+                    gncFields.forEach(field => {
+                        field.disabled = false;
+                        field.classList.remove('disabled-background');
+                    });
+                } else {
+                    gncFields.forEach(field => {
+                        field.disabled = true;
+                        field.classList.add('disabled-background');
+                    });
+                }
+            }
+        
+            toggleGncFields();
+        
+            combustibleSelect.addEventListener('change', toggleGncFields);
+        
+            // Al enviar el formulario, asegurarse de que se envíe el valor correcto sin el "mts"
+            document.getElementById('tu_formulario_id').addEventListener('submit', (event) => {
+                const inputs = document.querySelectorAll('.input-container-metros input');
+                inputs.forEach(input => {
+                    let value = input.value.trim();
+                    if (value.endsWith('mts')) {
+                        input.value = value.slice(0, -3).trim(); // Eliminar "mts" y espacios al final antes de enviar
+                    }
+                });
+            });
+        });
+        
+         // ITV OPCIONAL
+        function toggleITVFields() {
+            var checkBox = document.getElementById("toggleITV");
+            var itvFields = document.querySelectorAll(".itv-field");
+
+            if (checkBox.checked) {
+                itvFields.forEach(function(field) {
+                    field.style.display = "flex";
+                });
+            } else {
+                itvFields.forEach(function(field) {
+                    field.style.display = "none";
+                });
+            }
+        }
+
+        // Inicializa el estado de los campos al cargar la página
+        document.addEventListener("DOMContentLoaded", function() {
+            toggleITVFields();
+        });
+
+
+        </script>
+        <script>
+         {% comment %}    function applyToAll() {
+                var checkBox = document.getElementById("applyAll");
+                var medidaBaseElement = document.getElementById("medidaDelanteraDerecha");
+                console.log(medidaBaseElement);  // Verifica qué obtiene como elemento
+                var medidaBase = medidaBaseElement.textContent.trim();
+                console.log(medidaBase);  // Verifica el valor que se está leyendo
+            
+                if (checkBox.checked && medidaBase !== "") {
+                    document.getElementById("medidaDelanteraIzquierda").textContent = medidaBase;
+                    document.getElementById("medidaTraseraDerecha").textContent = medidaBase;
+                    document.getElementById("medidaTraseraIzquierda").textContent = medidaBase;
+                    document.getElementById("medidaAuxilio").textContent = medidaBase;
+                } else {
+                    alert("No hay medida en la cubierta delantera derecha para aplicar.");
+                }
+            }; {% endcomment %}
+
+
+            {% comment %} medidas un millon que ande {% endcomment %}
+            function applyToAll() {
+                var checkBox = document.getElementById("applyAll");
+                var medidaBaseInput = document.getElementById("id_medidas_delantera_derecha");  
+                var medidaBase = medidaBaseInput.value.trim();
+            
+                if (checkBox.checked && medidaBase !== "") {
+                    document.getElementById("id_medidas_delantera_izquierda").value = medidaBase;
+                    document.getElementById("id_medidas_trasera_derecha").value = medidaBase;
+                    document.getElementById("id_medidas_trasera_izquierda").value = medidaBase;
+                    document.getElementById("id_medidas_auxilio").value = medidaBase;
+                } else if (checkBox.checked && medidaBase === "") {
+                    alert("No hay medida en la cubierta delantera derecha para aplicar.");
+                    checkBox.checked = false;
+                }
+            }
+           {% comment %}  function toggleITVFields() {
+                var checkBox = document.getElementById("toggleITV");
+                var itvFields = document.querySelectorAll(".itv-field");
+        
+                if (checkBox.checked) {
+                    itvFields.forEach(function(field) {
+                        field.style.display = "flex";
+                    });
+                } else {
+                    itvFields.forEach(function(field) {
+                        field.style.display = "none";
+                    });
+                }
+            }
+    
+            // Inicializa el estado de los campos al cargar la página
+            document.addEventListener("DOMContentLoaded", function() {
+                toggleITVFields();
+            });
+            </script> {% endcomment %}
+
+{% comment %} rojo para mails {% endcomment %}
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var emailFields = [
+            document.getElementById("id_email_entrega"),
+            document.getElementById("id_email_duenio")
+        ];
+    
+        var invalidEmails = [
+            "noposee@gmail.com",
+            "noposee@gmial.com",
+            "np@hotmail.com",
+            "aconfirmar@gmail.com",
+            "ACONFIRMAR@HOTMAIL.COM",
+            "ACONFIRMAR@GMAIL.COM",
+            "ACONFIIRMAR@GMAIL.COM",
+            "ACONFIRMA@HOTMAIL.COM",
+            "aconfirmar@hotmail.com",
+            "noposee@hotmail.com",
+            "NOPOSEE@HOTMAIL.COM",
+            "NOPOSEE@gmail.com",
+            "NOPOSEE@NOPOSEE.COM",
+            "[No Posee]",
+            "notiene@notiene.com.ar",
+            "notiene@notiene.com",
+            "notiene@gmail.com",
+            "1234@1234.com.ar",
+            "no@gmail.com",
+            "aaa@gmail.com",
+            "123@123.com",
+            "aaa@aaa.com.ar"
+        ];
+    
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+        emailFields.forEach(function(emailField) {
+            emailField.addEventListener("input", function() {
+                var email = emailField.value;
+    
+                if (!emailPattern.test(email) || invalidEmails.includes(email.toLowerCase())) {
+                    emailField.style.color = "red";
+                } else {
+                    emailField.style.color = "black";
+                }
+            });
+        });
+    });
+    
+
+    
+    //Script Kilometros 2.0
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const handleInput = (event) => {
+            let input = event.target;
+            let value = input.value.trim();
+            if (value.length > 0) {
+                input.parentNode.classList.add('input-focus'); // Agregar clase para mostrar el sufijo
+            } else {
+                input.parentNode.classList.remove('input-focus'); // Quitar clase si el campo está vacío
+            }
+        };
+
+        // Añadir manejadores de eventos para cada campo de entrada
+        const fields = ['id_km', 'id_service_aceite_km', 'id_cambio_distribucion_km'];
+        fields.forEach(fieldId => {
+            const input = document.getElementById(fieldId);
+            const inputContainer = document.createElement('div');
+            inputContainer.classList.add('input-container');
+            input.parentNode.insertBefore(inputContainer, input);
+            inputContainer.appendChild(input);
+
+            const suffix = document.createElement('span');
+            suffix.classList.add('suffix');
+            suffix.textContent = ' km'; // Sufijo visual "km"
+            inputContainer.appendChild(suffix);
+
+            input.addEventListener('input', handleInput);
+        });
+
+        // Al enviar el formulario, asegurarse de que se envíe el valor correcto sin el "km"
+        document.getElementById('tu_formulario_id').addEventListener('submit', (event) => {
+            const inputs = document.querySelectorAll('.input-container input');
+            inputs.forEach(input => {
+                let value = input.value.trim();
+                if (value.endsWith('km')) {
+                    input.value = value.slice(0, -2).trim(); // Eliminar "km" y espacios al final antes de enviar
+                }
+            });
+        });
+    });
+
+
+    // SCRIPT FOTOS - IMAGENES
+document.addEventListener('DOMContentLoaded', function () {
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('id_fotos');
+    const previewContainer = document.getElementById('preview');
+    let fileList = [];
+  
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+  
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, () => {
+        dropArea.classList.add('dragover');
+      }, false);
+    });
+  
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, () => {
+        dropArea.classList.remove('dragover');
+      }, false);
+    });
+  
+    dropArea.addEventListener('drop', handleDrop, false);
+  
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      handleFiles(files);
+    }
+  
+    function handleFiles(files) {
+      fileList = [...fileList, ...files];
+      updatePreview();
+    }
+  
+    function previewFile(file, index) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('preview-image-container');
+  
+        const img = document.createElement('img');
+        img.src = reader.result;
+        img.classList.add('preview-image');
+  
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'x';
+        deleteButton.classList.add('delete-button');
+        deleteButton.addEventListener('click', () => {
+          removeFile(index);
+        });
+  
+        imgContainer.appendChild(img);
+        imgContainer.appendChild(deleteButton);
+        previewContainer.appendChild(imgContainer);
+      };
+    }
+  
+    function updatePreview() {
+      clearPreview();
+      fileList.forEach((file, index) => {
+        previewFile(file, index);
+      });
+    }
+  
+    function clearPreview() {
+      while (previewContainer.firstChild) {
+        previewContainer.removeChild(previewContainer.firstChild);
+      }
+    }
+  
+    function removeFile(index) {
+      fileList.splice(index, 1);
+      updatePreview();
+    }
+  
+    fileInput.addEventListener('change', function () {
+      const files = fileInput.files;
+      handleFiles(files);
+    });
+  });
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    const fileInput = document.getElementById('id_fotos');
+    const nextButton = document.getElementById('next-button');
+    const errorMessage = document.getElementById('error-message');
+  
+    nextButton.addEventListener('click', function(event) {
+        if (fileInput.files.length === 0) {
+            event.preventDefault();
+            errorMessage.style.display = 'block';
+        } else {
+            errorMessage.style.display = 'none';
+        }
+    });
+  
+    fileInput.addEventListener('change', function() {
+        if (fileInput.files.length > 0) {
+            errorMessage.style.display = 'none';
+        }
+    });
+  });
+  
+
+
+
+// Cambios 8/7 Primera con mayuscula seguida de minusculas
+function capitalizeWords(event) {
+    let input = event.target;
+    let words = input.value.split(' ');
+    for (let i = 0; i < words.length; i++) {
+        words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1).toLowerCase();
+    }
+    input.value = words.join(' ');
+}
+
+
+//VERIFICAR CUIL
+document.addEventListener('DOMContentLoaded', function() {
+    function calcularDigitoVerificador(cuil) {
+        const pesos = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+        let suma = 0;
+        for (let i = 0; i < 10; i++) {
+            suma += parseInt(cuil[i]) * pesos[i];
+        }
+        const resto = suma % 11;
+        if (resto === 0) {
+            return 0;
+        } else if (resto === 1) {
+            if (cuil.startsWith('20')) {
+                return 9;
+            } else if (cuil.startsWith('27')) {
+                return 4;
+            } else {
+                return 1;  
+            }
+        } else {
+            return 11 - resto;
+        }
+    }
+
+    function verificarCuil(cuil) {
+        cuil = cuil.replace(/\D/g, '');
+        if (cuil.length !== 11) {
+            return false;
+        }
+        const digitoVerificadorCalculado = calcularDigitoVerificador(cuil);
+        const digitoVerificador = parseInt(cuil[10]);
+        return digitoVerificador === digitoVerificadorCalculado;
+    }
+
+    function validarCuil(inputElement, errorElementId) {
+        const cuil = inputElement.value;
+        const errorElement = document.getElementById(errorElementId);
+        if (!verificarCuil(cuil)) {
+            errorElement.style.display = 'block';
+        } else {
+            errorElement.style.display = 'none';
+        }
+    }
+
+    document.querySelector('.cuil-input#id_cuil_entrega').addEventListener('change', function() {
+        validarCuil(this, 'cuil-entrega-error');
+    });
+
+    document.querySelector('.cuil-input#id_cuil_duenio').addEventListener('change', function() {
+        validarCuil(this, 'cuil-duenio-error');
+    });
+});
+
+    </script>
+<script src="{% static 'js/script.js' %}"></script>      
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+
+    .table {
+        width: 100%;
+        border-collapse: separate; 
+        border-spacing: 0 15px; 
+        margin: 5px auto;
+        background-color: transparent; 
+    }
+    
+    th, td {
+        text-align: left;
+        padding: 12px 15px;
+        background-color: #ffffff;
+        vertical-align: middle;
+    }
+    
+    thead th {
+        background-color: #1A1D39;
+        color: #ffffff;
+        font-size: 13px;
+        text-align: center;
+    }
+    
+    tbody tr {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; 
+    }
+    
+    tbody tr:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        background-color: #3c3f5ede;
+    }
+    
+    .car-icon {
+        visibility: hidden;
+        margin-right: 8px;
+    }
+    
+    tbody tr:hover .car-icon {
+        visibility: visible;
+    }
+    .container{
+        width:70%;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+    .table {
+        font-size: 1rem;
+    }
+    @media (max-width: 768px) {
+        .table {
+            font-size: 0.8rem;
+        }
+        .table th, .table td {
+            padding: 0.3rem;
+            font-size: 10px;
+        }
+    }
+    @media (max-width: 576px) {
+        .table {
+            font-size: 0.6rem;
+        }
+        .table th, .table td {
+            padding: 0.2rem;
+        }
+    }
+    
+    
+    
+</style>
+
+<div class="container">
+    <h4 class="m-2" style="text-align: center;">REPORTES</h4>
+
+    <div class=" text-center">
+        <div class="row justify-content-center">
+            <form method="GET" action="{% url 'reporte' %}" class="search-form form-inline">
+                <div class="form-group">
+                    <select id="branch" name="branch" class="form-control">
+                        <option value="" disabled selected>Concesionaria</option>
+                        {% for branch in branches %}
+                        <option value="{{ branch.id }}" {% if request.GET.branch == branch.id|stringformat:"s" %}selected{% endif %}>
+                            {{ branch.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group m-2">
+                    <input type="month" id="fecha_inicio" name="fecha_inicio" class="form-control" placeholder="Desde" value="{% if request.GET.fecha_inicio %}{{ request.GET.fecha_inicio }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <input type="month" id="fecha_fin" name="fecha_fin" class="form-control" placeholder="Hasta" value="{% if request.GET.fecha_fin %}{{ request.GET.fecha_fin }}{% endif %}">
+                </div>
+                <div class="form-group m-2">
+                    <button type="submit" class="btn btn-secondary mr-1" style="background-color:#1A1D39"><i class="fas fa-search"></i></button>
+                    <a href="{% url 'excel' %}?fecha={{ request.GET.fecha }}&branch={{ request.GET.branch }}" class="btn btn-success">
+                        <i class="fas fa-file-excel"></i>
+                    </a>
+                    {{cantidad}}
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <table class="table table table-hover table-container">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>NOMBRE ENTREGA</th>
+                <th>NOMBRE DUEÑO</th>
+                <th>PATENTE</th>
+                <th>MODELO</th>
+                <th>PRECIO VALOR TOMA</th>
+                <th>PRECIO VALOR MERCADO</th>
+                <th>FECHA TASACIÓN</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in peritajes %}
+            <tr>
+                <td style="color: #1A1D39"><i class="fas fa-car-side car-icon"></i>{{ item.peritaje.codigo_peritaje }}</td>
+                <td>{{ item.cliente_peritar.nombre_apellido_entrega }}</td>
+                <td>{{ item.cliente_peritar.nombre_apellido_duenio }}</td>
+                <td>{{ item.coche_peritaje.patente }}</td>
+                <td>{{ item.coche_peritaje.modelo }}</td>
+                <td>{{ item.total_gastos.precio_valor_toma }}</td>
+                <td>{{ item.total_gastos.valor_mercado }}</td>
+                <td>{{ item.fecha_tasacion|date:"d/m/Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        
+        
+    </table>
+</div>
+<script>
+document.querySelectorAll('.table tbody tr').forEach(row => {
+    row.addEventListener('mouseenter', () => {
+        const statusCell = row.querySelector('.status');
+        const originalColor = statusCell.style.color;
+        statusCell.dataset.originalColor = originalColor;
+        statusCell.style.color = '#0000ff'; // Cambia a azul
+    });
+
+    row.addEventListener('mouseleave', () => {
+        const statusCell = row.querySelector('.status');
+        statusCell.style.color = statusCell.dataset.originalColor;
+    });
+});
+
+
+{% endblock %}

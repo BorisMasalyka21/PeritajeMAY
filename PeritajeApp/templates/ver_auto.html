@@ -1,0 +1,65 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/auto.css' %}" />
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">Preview Imagen Auto</h1>
+        <div class="d-flex justify-content-center mb-4">
+            <div id="letras-seleccionadas" class="btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
+                <label class="btn btn-secondary">
+                    <input type="radio" name="letra" value="P" autocomplete="off" checked> P<br><small>Pintar</small>
+                </label>
+                <label class="btn btn-secondary" readonly>
+                    <input type="radio" name="letra" value="RP" autocomplete="off" readonly> RP<br><small>Reparar y Pintar</small>
+                </label>
+                <label class="btn btn-secondary" readonly>
+                    <input type="radio" name="letra" value="M" autocomplete="off" readonly> M<br><small>Microbollo</small>
+                </label>
+                <label class="btn btn-secondary" readonly>
+                    <input type="radio" name="letra" value="MA" autocomplete="off" readonly> MA<br><small>Macrobollo</small>
+                </label>
+                <label class="btn btn-secondary" readonly>
+                    <input type="radio" name="letra" value="L" autocomplete="off" readonly> L<br><small>Lustrar</small>
+                </label>
+                <label class="btn btn-secondary" readonly> 
+                    <input type="radio" name="letra" value="LP" autocomplete="off" readonly> LP<br><small>Lustrado Prof.</small>
+                </label>
+                <label class="btn btn-secondary" readonly>
+                    <input type="radio" name="letra" value="S" autocomplete="off" readonly> S<br><small>Susituir</small>
+                </label>
+                <label class="btn btn-secondary" readonly>
+                    <input type="radio" name="letra" value="F" autocomplete="off" readonly> F <br><small>Faltante</small>
+                </label>
+                <label class="btn btn-secondary" readonly>
+                    <input type="radio" name="letra" value="A" autocomplete="off" readonly> A <br><small>Alinear</small>
+                </label>
+                <label class="btn btn-secondary" readonly>
+                    <input type="radio" name="letra" value="LI" autocomplete="off" readonly> LI<br><small>Lijar</small>
+                </label>
+            </div>
+        </div>
+        {% if ultima_imagen_marcada %}
+        <div >
+            <div class="d-flex justify-content-center">
+                <img src="{{ MEDIA_URL }}{{ ultima_imagen_marcada.ruta }}" alt="{{ ultima_imagen_marcada.nombre }}" style="max-width: 720px; height: auto;">
+            </div>
+            
+            <div>
+                <h2 style="text-align: center !important; margin-top: 10px !important; margin-bottom: 10px !important;">Observaciones y Comentarios</h2>
+                <p style=" width: 100%; border: 1px solid black; height: 30%; border-radius: 25px; padding: 20px;">{{ ultima_imagen_marcada.observaciones }}</p>
+                <h4></h4>
+            </div>
+        </div>
+    {% else %}
+        <p>No hay imágenes marcadas para este peritaje.</p>
+    {% endif %} 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.0.0-rc.7/html2canvas.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
