@@ -137,7 +137,7 @@
         <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
             <div class="form-group">
                 <label for="{{ coche_form.patente.id_for_label }}">Patente</label>
-                <input class="form-control" type="text" name="{{ coche_form.patente.name }}" id="{{ coche_form.patente.id_for_label }}" value="{{ coche_form.patente.value }}" readonly>
+                <input class="form-control" type="text" name="{{ coche_form.patente.name }}" id="{{ coche_form.patente.id_for_label }}" value="{{ coche_form.patente.value }}" style="text-transform: uppercase;" readonly>
             </div>
         </div>
         <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
@@ -842,18 +842,15 @@
                       {% csrf_token %}
                       {% if es_gerente %}
                           <div class="text-center my-4">
+                              
                               <button style="background-color: #AC0000; border: none;" class="btn btn-primary btn-primary-custom" onclick="goBack()">VOLVER</button>
-                              <button type="submit" name="aprobado" class="btn btn-primary btn-primary-custom" style="background-color: green; border: none;">APROBAR</button> 
+                              <button type="submit" name="aprobado" class="btn btn-primary btn-primary-custom" style="background-color: green">APROBAR</button>
                           </div>
                       {% endif %}
                   </form>
             </form>
 </div>
     <script>
-        //Volver atras
-function goBack() {
-    window.history.back();
-}
         document.addEventListener('DOMContentLoaded', function() {
             // Formateo de números de teléfono
             var phoneInputs = document.querySelectorAll(".telefono_duenio");
@@ -972,6 +969,11 @@ function goBack() {
             addKMSuffix('id_cambio_distribucion_km');
         });
 
+
+        //Volver atras
+function goBack() {
+    window.history.back();
+}
         </script>
         
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

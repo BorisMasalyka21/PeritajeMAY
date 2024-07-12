@@ -842,8 +842,7 @@
             <div id="preview" class="preview-container"></div>
             <div id="error-message" style="color: red; text-align: center; display: none;">Por favor, sube al menos una imagen.</div>
             <div class="text-center my-4">
-                <button style="background-color: #AC0000; border: none;" class="btn btn-primary btn-primary-custom" onclick="goBack()">VOLVER</button>
-                <button type="submit" class="btn btn-primary btn-primary-custom" id="next-button">SIGUIENTE</button>
+                <button type="submit" class="btn btn-primary btn-primary-custom" style="margin-bottom: 20px;" id="next-button">SIGUIENTE</button>
             </div>
                 <div id="preview" class="preview-container"></div>
                 <div id="error-message" style="color: red; text-align: center; display: none;">Por favor, sube al menos una imagen.</div>
@@ -852,9 +851,6 @@
  </form> 
 </div>
 <script>
-    function goBack() {
-        window.history.back();
-    }
     document.addEventListener('DOMContentLoaded', function() {
         // Formateo de números de teléfono
         var phoneInputs = document.querySelectorAll(".telefono_duenio");
@@ -1034,11 +1030,11 @@
 
         if (checkBox.checked) {
             itvFields.forEach(function(field) {
-                field.querySelector('input').disabled = false;
+                field.style.display = "flex";
             });
         } else {
             itvFields.forEach(function(field) {
-                field.querySelector('input').disabled = true;
+                field.style.display = "none";
             });
         }
     }
@@ -1085,7 +1081,25 @@
             checkBox.checked = false;
         }
     }
-
+            function toggleITVFields() {
+                var checkBox = document.getElementById("toggleITV");
+                var itvFields = document.querySelectorAll(".itv-field");
+        
+                if (checkBox.checked) {
+                    itvFields.forEach(function(field) {
+                        field.style.display = "flex";
+                    });
+                } else {
+                    itvFields.forEach(function(field) {
+                        field.style.display = "none";
+                    });
+                }
+            }
+    
+            // Inicializa el estado de los campos al cargar la página
+            document.addEventListener("DOMContentLoaded", function() {
+                toggleITVFields();
+            });
             </script>
 
 {% comment %} rojo para mails {% endcomment %}

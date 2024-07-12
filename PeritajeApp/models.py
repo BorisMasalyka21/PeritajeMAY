@@ -153,7 +153,6 @@ class CochePeritaje(models.Model):
     CAJA_CHOICES = [('Manual', 'Manual'),('Automatico', 'Automatico'),]
     COMBUSTIBLE_CHOICES = [('NAFTA', 'NAFTA'),('DIESEL', 'DIESEL'),('GNC', 'GNC')]
     PUERTAS_CHOICES= [('2', '2'),('3', '3'),('4', '4'),('5', '5')]
-    
     COLORES_CHOICES = [
     ('amarillo', 'Amarillo'),
     ('azul', 'Azul'),
@@ -272,36 +271,36 @@ class Equipamiento(models.Model):
  
 class InspeccionCubiertas(models.Model):
     formato_cubiertas_validator = RegexValidator(regex=r'^\d{3}/\d{2}R\d{2}$',message="El formato de las medidas debe ser '000/00R00'.")
-    MARCA_CHOICES = [('Bridgestone ', 'Bridgestone '),('Continental ', 'Continental '),('Pirelli', 'Pirelli'),('Kumho', 'Kumho'),('Good year', 'Good year'),('Fate', 'Fate'),('Firestone', 'Firestone'),('Dunlop', 'Dunlop'),('Michelin', 'Michelin'),('Hankook', 'Hankook'),('Temporal', 'Temporal'),('Otras', 'Otras')]
-    
+    MARCA_CHOICES = [('Bridgestone ', 'Bridgestone '),('Continental ', 'Continental'),('Pirelli', 'Pirelli'),('Kumho', 'Kumho'),('Good year', 'Good year'),('Fate', 'Fate'),('Firestone', 'Firestone'),('Dunlop', 'Dunlop'),('Michelin', 'Michelin'),('Hankook', 'Hankook'),('Otras', 'Otras')]
+    VIDA_UTIL_CHOICES = [('0% ', '0% '),('25% ', '25% '),('50% ', '50% '),('75% ', '75% '),('100% ', '100% ')]
     # Cubierta delantera derecha
     marca_delantera_derecha = models.CharField(max_length=50,choices=MARCA_CHOICES,default=False)
     medidas_delantera_derecha = models.CharField(max_length=50, validators=[formato_cubiertas_validator])
-    vida_util_delantera_derecha =  models.CharField(max_length=50)
+    vida_util_delantera_derecha =  models.CharField(max_length=50,choices=VIDA_UTIL_CHOICES,default=False)
     gastos_delantera_derecha = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # Cubierta delantera izquierda
     marca_delantera_izquierda = models.CharField(max_length=50,choices=MARCA_CHOICES,default=False)
     medidas_delantera_izquierda = models.CharField(max_length=50, validators=[formato_cubiertas_validator])
-    vida_util_delantera_izquierda =  models.CharField(max_length=50)
+    vida_util_delantera_izquierda =  models.CharField(max_length=50,choices=VIDA_UTIL_CHOICES,default=False)
     gastos_delantera_izquierda = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # Cubierta trasera derecha
     marca_trasera_derecha = models.CharField(max_length=50,choices=MARCA_CHOICES,default=False)
     medidas_trasera_derecha = models.CharField(max_length=50, validators=[formato_cubiertas_validator])
-    vida_util_trasera_derecha =  models.CharField(max_length=50)
+    vida_util_trasera_derecha =  models.CharField(max_length=50,choices=VIDA_UTIL_CHOICES,default=False)
     gastos_trasera_derecha = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # Cubierta trasera izquierda
     marca_trasera_izquierda = models.CharField(max_length=50,choices=MARCA_CHOICES,default=False)
     medidas_trasera_izquierda = models.CharField(max_length=50, validators=[formato_cubiertas_validator])
-    vida_util_trasera_izquierda =  models.CharField(max_length=50)
+    vida_util_trasera_izquierda =  models.CharField(max_length=50,choices=VIDA_UTIL_CHOICES,default=False)
     gastos_trasera_izquierda = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # Cubierta de auxilio
     marca_auxilio = models.CharField(max_length=50,choices=MARCA_CHOICES,default=False,  blank=True, null=True)
     medidas_auxilio = models.CharField(max_length=50, validators=[formato_cubiertas_validator],  blank=True, null=True)
-    vida_util_auxilio =  models.CharField(max_length=50,  blank=True, null=True)
+    vida_util_auxilio =  models.CharField(max_length=50, choices=VIDA_UTIL_CHOICES,blank=True, null=True,default=False)
     gastos_auxilio = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     peritaje = models.ForeignKey(Peritaje, on_delete=models.CASCADE)
     

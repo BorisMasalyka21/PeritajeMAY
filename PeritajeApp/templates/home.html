@@ -47,17 +47,15 @@
                             <option value="nombre_entrega">Cliente</option>
                             <option value="patente">Patente</option>
                             <option value="modelo">Modelo</option>
-                            <option value="aceptado">Aceptado</option>
-                            <option value="enviado">Enviado</option>
                         </select>
                     </div>
                     <div class="form-group mb-2 mx-sm-2">
                         <label for="input" class="sr-only">Entrada</label>
                         <input type="text" name="input" id="input" class="form-control form-control-sm" placeholder="Buscar..">
                     </div>
-                    <div class="form-group mb-2">
-                        <button type="submit" class="btn btn-primary btn-sm" style="background-color:#1A1D39; border:none; margin-bottom: 0px !important;">
-                            <i class="fas fa-search"></i>
+                    <div class="form-group mb-2 ">
+                        <button type="submit" class="btn btn-primary btn-sm " style="background-color:#1A1D39; border:none; margin-bottom: 0px !important;">
+                            <i class="fas fa-search "></i>
                         </button>
                     </div>
                 </form>
@@ -159,14 +157,14 @@
         });
     });
 
-    
+
 
     document.querySelector('.scroll').addEventListener('click', function(e) {
         e.preventDefault();
         document.querySelector('#peritajes').scrollIntoView({ behavior: 'smooth' });
     });
     
-    document.getElementById('buscador').addEventListener('change', function() {
+        document.getElementById('buscador').addEventListener('change', function() {
         let selectedValue = this.value;
         document.getElementById('input').name = selectedValue;
     });

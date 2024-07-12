@@ -9,7 +9,6 @@
 <!-- Enlace a tu CSS personalizado -->
 <link rel="stylesheet" href="{% static 'css/ver_peritaje.css' %}">
 <style>
-   
 
     #id_fecha_tasacion, #id_fecha_recepcion, #id_receptor, #id_peritador{
         height: 38px !important;
@@ -50,9 +49,6 @@
     }
     .input-container-metros.input-focus .suffix {
         opacity: 1; /* Mostrar cuando el campo tiene foco o contenido */
-    }
-    input::placeholder{
-        color: #CDCDCD !important;
     }
     
     
@@ -198,40 +194,72 @@
     background-color: #e8ecef  !important;
     color:#e8ecef !important;
 }
-.itv-field {
-    display: flex; /* Mostrar en todo momento */
-    flex-direction: row; /* Estilo flex */
-}
-.disabled-field {
-    background-color: #d3d3d3 !important; /* Color más oscuro para los campos deshabilitados */
 
-/* Estilo del botón SIGUIENTE */
-.btn-primary-custom {
+
+{% comment %} subir fotos animacion {% endcomment %}
+/* Animación de pulsación para el ícono */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animate-icon {
+    animation: pulse 2s infinite;
+}
+
+/* Desplazamiento suave */
+html {
+    scroll-behavior: smooth;
+}
+
+.animate-link {
+    transition: color 0.3s;
+}
+
+.animate-link:hover {
+    color: #1A1D39;
+    text-decoration: none;
+}
+
+/* Estilo para la flecha flotante */
+.floating-arrow {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
     background-color: #1A1D39;
+    color: #fff;
     border: none;
-    padding: 10px 20px;
-    color: white;
+    border-radius: 50%;
+    padding: 10px 15px;
+    font-size: 24px;
     cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    
+    display: none;
+    z-index: 1000;
 }
 
-/* Estilo del botón VOLVER (puedes reutilizar el estilo de btn-primary-custom si es el mismo) */
-.back-button {
-    background-color: #AC0000;
-    border: none;
-    padding: 10px 20px;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    margin-top: 2px;
+.floating-arrow.show {
+    display: block;
 }
+
 </style>
 
 <div class="container">
-   <h3 class="d-flex justify-content-center m-3">PERITAJE AUTOMOTOR</h3>
+    <h3 class="d-flex justify-content-center align-items-center m-3">
+        PERITAJE AUTOMOTOR
+        <a href="#subirfotos" class="ml-3 d-flex align-items-center text-decoration-none animate-link" style="color: #1A1D39; font-size: 20px;">
+            <i class="fas fa-camera mr-1 animate-icon" style="color: #1A1D39;"></i>
+            CARGAR FOTOS
+        </a>
+    </h3>
+    
+    
 <form method="post" enctype="multipart/form-data" style=" max-width: 1800px;">  
     {% csrf_token %}
    
@@ -255,7 +283,7 @@
                 <div class="col-md-3 col-sm-3 col-xs-6" style="padding: 0 !important; margin-bottom: 0 !important;">
                     <div class="form-group">
                         <label for="{{ coche_form.fecha_tasacion.id_for_label }}">Fecha Tasacion</label>
-                        {{ coche_form.fecha_tasacion }}
+                        <input type="text" id="{{ coche_form.fecha_tasacion.id_for_label }}" name="{{ coche_form.fecha_tasacion.name }}" value="{{ fecha_actual|date:'d/m/Y' }}" readonly class="form-control">
                     </div>
                 </div>
                 
@@ -383,13 +411,11 @@
                 </div>
                 <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
                     <div class="form-group">
-                        <label for="toggleITV">
-                        Vto. ITV o VTV
-                            <input type="checkbox" id="toggleITV" onclick="toggleITVFields()" style="height: 15px !important;">
-                        </label>
+                        <label for="toggleITV">Tiene ITV o VTV? <input type="checkbox" id="toggleITV" onclick="toggleITVFields()" style="height: 15px !important;"></label>
+                        
                     </div>
                     <div class="form-group itv-field">
-                        
+                        <label for="{{ coche_form.vto_de_vto_o_itv.id_for_label }}">Vto:</label>
                         {{ coche_form.vto_de_vto_o_itv }}
                     </div>
                 </div>
@@ -914,7 +940,7 @@
                     </table>
                 </div>
             </div> 
-            <div class="container" style="display: flex; justify-content: center; background-color: white;">
+            <div class="container" style="display: flex; justify-content: center; background-color: white;" id="subirfotos">
                 <label for="id_fotos" class="file-upload-label" id="drop-area">
                     <div class="file-upload-design">
                         <svg viewBox="0 0 640 512" height="1em">
@@ -930,20 +956,53 @@
             <div id="preview" class="preview-container"></div>
             <div id="error-message" style="color: red; text-align: center; display: none;">Por favor, sube al menos una imagen.</div>
             <div class="text-center my-4">
-               
-                <button style="background-color: #AC0000; border: none;" class="btn btn-primary btn-primary-custom" onclick="goBack()">VOLVER</button>
-                <button type="submit" class="btn btn-primary btn-primary-custom" id="next-button">SIGUIENTE</button>
+                <button style="background-color: #1A1D39; border:none;" type="submit" class="btn btn-primary btn-primary-custom" style="margin-bottom: 20px;" id="next-button">SIGUIENTE</button>
             </div>
-            
+            <!-- Flecha flotante para subir -->
+<button id="backToTop" class="floating-arrow">
+    <i class="fas fa-arrow-up"></i>
+</button>
+               
                
  </form> 
 </div>
 <script>
-//Volver atras
-function goBack() {
-    window.history.back();
-}
+    document.querySelector('.animate-link').addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
 
+        window.scrollTo({
+            top: targetElement.offsetTop - 50,
+            behavior: 'smooth'
+        });
+
+        targetElement.classList.add('animate__animated', 'animate__bounceIn');
+        setTimeout(() => {
+            targetElement.classList.remove('animate__animated', 'animate__bounceIn');
+        }, 1000);
+    });
+
+    // Mostrar/ocultar la flecha flotante
+    const backToTopButton = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 100) {
+            backToTopButton.classList.add('show');
+        } else {
+            backToTopButton.classList.remove('show');
+        }
+    });
+
+    // Desplazamiento al principio de la página al hacer clic en la flecha flotante
+    backToTopButton.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         // Formateo de números de teléfono
         var phoneInputs = document.querySelectorAll(".telefono_duenio");
@@ -1018,29 +1077,24 @@ function goBack() {
     } {% endcomment %}
     {% comment %} CHECKBOX DE CLIENTE DUPLICADOS {% endcomment %}
 
-    document.addEventListener('DOMContentLoaded', function() {
-        var titularSelect = document.getElementById("titularSelect");
+    function toggleEntregaFields() {
+        var checkBox = document.getElementById("toggleEntrega");
         var entregaFields = document.querySelectorAll(".entrega-field");
 
-        function toggleEntregaFields() {
-            if (titularSelect.value === "ES TITULAR") {
-                entregaFields.forEach(function(field) {
-                    field.style.display = "none";
-                });
-            } else {
-                entregaFields.forEach(function(field) {
-                    field.style.display = "block";
-                });
-            }
+        if (checkBox.checked) {
+            entregaFields.forEach(function(field) {
+                field.style.display = "block";
+            });
+        } else {
+            entregaFields.forEach(function(field) {
+                field.style.display = "none";
+            });
         }
+    }
 
-        // Llama a la función inicialmente para establecer el estado correcto
+    // Inicializa el estado de los campos al cargar la página
+    document.addEventListener("DOMContentLoaded", function() {
         toggleEntregaFields();
-
-        // Agrega un listener para detectar cambios en el campo titular
-        titularSelect.addEventListener('change', function() {
-            toggleEntregaFields();
-        });
     });
     </script>
 
@@ -1166,19 +1220,17 @@ function goBack() {
         });
         
          // ITV OPCIONAL
-         function toggleITVFields() {
+        function toggleITVFields() {
             var checkBox = document.getElementById("toggleITV");
-            var itvFields = document.querySelectorAll(".itv-field input");
+            var itvFields = document.querySelectorAll(".itv-field");
 
             if (checkBox.checked) {
                 itvFields.forEach(function(field) {
-                    field.disabled = false;
-                    field.classList.remove('disabled-field');
+                    field.style.display = "flex";
                 });
             } else {
                 itvFields.forEach(function(field) {
-                    field.disabled = true;
-                    field.classList.add('disabled-field');
+                    field.style.display = "none";
                 });
             }
         }
@@ -1187,6 +1239,7 @@ function goBack() {
         document.addEventListener("DOMContentLoaded", function() {
             toggleITVFields();
         });
+
 
         </script>
         <script>
@@ -1213,17 +1266,27 @@ function goBack() {
                 var checkBox = document.getElementById("applyAll");
                 var medidaBaseInput = document.getElementById("id_medidas_delantera_derecha");  
                 var medidaBase = medidaBaseInput.value.trim();
+                var marcaBaseSelect = document.getElementById("id_marca_delantera_derecha");
+                var marcaBase = marcaBaseSelect.value;
             
                 if (checkBox.checked && medidaBase !== "") {
+                    // aca llamamos a las medidas e impactamos en las medidas
                     document.getElementById("id_medidas_delantera_izquierda").value = medidaBase;
                     document.getElementById("id_medidas_trasera_derecha").value = medidaBase;
                     document.getElementById("id_medidas_trasera_izquierda").value = medidaBase;
                     document.getElementById("id_medidas_auxilio").value = medidaBase;
+            
+                    // aca llamamos s las marcas
+                    document.getElementById("id_marca_delantera_izquierda").value = marcaBase;
+                    document.getElementById("id_marca_trasera_derecha").value = marcaBase;
+                    document.getElementById("id_marca_trasera_izquierda").value = marcaBase;
+                    document.getElementById("id_marca_auxilio").value = marcaBase;
                 } else if (checkBox.checked && medidaBase === "") {
                     alert("No hay medida en la cubierta delantera derecha para aplicar.");
                     checkBox.checked = false;
                 }
             }
+            
            {% comment %}  function toggleITVFields() {
                 var checkBox = document.getElementById("toggleITV");
                 var itvFields = document.querySelectorAll(".itv-field");
@@ -1514,6 +1577,7 @@ document.addEventListener('DOMContentLoaded', function() {
         validarCuil(this, 'cuil-duenio-error');
     });
 });
+
 // SCRIPT AÑO SOLO 4 DIGITOS
 function validateYearInput(event) {
     const input = event.target;
@@ -1562,6 +1626,52 @@ function validateYearInput(event) {
       });
     });
   });
+
+  {% comment %} subir foto desplazamiento {% endcomment %}
+  document.querySelector('.animate-link').addEventListener('click', function (e) {
+    e.preventDefault();
+    const targetId = this.getAttribute('href').substring(1);
+    const targetElement = document.getElementById(targetId);
+
+    window.scrollTo({
+        top: targetElement.offsetTop,
+        behavior: 'smooth'
+    });
+});
+
+
+
+
+//SCRIPT
+
+document.addEventListener('DOMContentLoaded', function() {
+    var titularSelect = document.getElementById("titularSelect");
+    var entregaFields = document.querySelectorAll(".entrega-field");
+
+    function toggleEntregaFields() {
+        if (titularSelect.value === "ES TITULAR") {
+            entregaFields.forEach(function(field) {
+                field.style.display = "none";
+            });
+        } else {
+            entregaFields.forEach(function(field) {
+                field.style.display = "block";
+            });
+        }
+    }
+
+    // Llama a la función inicialmente para establecer el estado correcto
+    toggleEntregaFields();
+
+    // Agrega un listener para detectar cambios en el campo titular
+    titularSelect.addEventListener('change', function() {
+        toggleEntregaFields();
+    });
+});
+//Volver atras
+function goBack() {
+    window.history.back();
+}
 
     </script>
 <script src="{% static 'js/script.js' %}"></script>      

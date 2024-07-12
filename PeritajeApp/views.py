@@ -25,7 +25,7 @@ from openpyxl import Workbook
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
-
+from datetime import datetime
 
 
 
@@ -76,7 +76,9 @@ def formatear_numero(numero):
     except (ValueError, TypeError):
         return numero
     
-# VISTA GENERAL
+    
+# COMBINED VIEW
+    
 class CombinedView(LoginRequiredMixin, View):
     template_name = 'coche_peritaje_form.html'
 
@@ -86,12 +88,18 @@ class CombinedView(LoginRequiredMixin, View):
 
     def post(self, request):
         post_data = request.POST.copy()
+        file_data = request.FILES.getlist('fotos')
+        
+        if 'ultimo_cambio_distribucion_fecha' in post_data and post_data['ultimo_cambio_distribucion_fecha']:
+            post_data['ultimo_cambio_distribucion_fecha'] += '-01'
         
         # Valores correspondientes a los campos _entrega y _duenio
-        entrega_to_duenio_mapping = {'nombre_apellido_entrega': 'nombre_apellido_duenio'
-                                     ,'telefono_entrega': 'telefono_duenio',
-                                     'email_entrega': 'email_duenio',
-                                     'cuil_entrega': 'cuil_duenio',}
+        entrega_to_duenio_mapping = {
+            'nombre_apellido_entrega': 'nombre_apellido_duenio',
+            'telefono_entrega': 'telefono_duenio',
+            'email_entrega': 'email_duenio',
+            'cuil_entrega': 'cuil_duenio',
+        }
         
         # Asignar valores de _entrega a _duenio si están vacíos
         for entrega_field, duenio_field in entrega_to_duenio_mapping.items():
@@ -102,6 +110,7 @@ class CombinedView(LoginRequiredMixin, View):
             if field_name.startswith('gastos_') or field_name.endswith('_gasto') or field_name == 'total_gastos' or field_name == 'valor_mercado' or field_name == 'precio_info_auto' or field_name == 'precio_valor_toma':
                 field_value = post_data[field_name]
                 if field_value:
+                    # Eliminar el signo $
                     field_value_str = field_value.replace('$', '').replace('.', '').replace(',', '.')
                     try:
                         post_data[field_name] = str(Decimal(field_value_str))
@@ -114,13 +123,15 @@ class CombinedView(LoginRequiredMixin, View):
         if not es_gerente:
             post_data['precio_valor_toma'] = None
 
+        # Inicializar los formularios con post_data y file_data
         forms = self._initialize_forms(post_data, request.FILES)
 
         if self._validate_forms(forms):
             peritaje = self._create_peritaje(request, forms)
             return redirect('imagen_auto', peritaje_id=peritaje.id)
         else:
-            context = self._get_error_context(forms, )
+            # Si hay errores, volver a renderizar la página con los datos ingresados
+            context = self._get_error_context(forms, file_data)
             return render(request, self.template_name, context)
 
     def _get_initial_context(self, request):
@@ -128,8 +139,12 @@ class CombinedView(LoginRequiredMixin, View):
         es_gerente = usuario.groups.filter(name='Gerente').exists()
         branches = Branch.objects.all()
         unidades_negocio = Unidad_negocio.objects.all()
-        if not branches.exists():
-            print("No hay sucursales disponibles.")
+        
+        # Obtener la fecha actual
+        fecha_actual = datetime.now()
+        
+        # Inicializar el formulario CochePeritajeForm con la fecha actual
+        coche_form = CochePeritajeForm(initial={'fecha_tasacion': fecha_actual})
         
         return {
             'es_gerente': es_gerente,
@@ -142,16 +157,17 @@ class CombinedView(LoginRequiredMixin, View):
             'inspeccion_cubiertas_form': InspeccionCubiertasForm(),
             'inspeccion_gral_form': InspeccionGralForm(),
             'gastos_total_form': Gastos_totalForm(),
+            'fecha_actual':fecha_actual,
         }
 
     def _initialize_forms(self, post_data, file_data):
         return [
-            Gastos_totalForm(post_data),
-            EquipamientoForm(post_data),
-            CochePeritajeForm(post_data),
-            ClientePeritarForm(post_data),
-            InspeccionCubiertasForm(post_data),
-            InspeccionGralForm(post_data),
+            Gastos_totalForm(post_data, file_data),
+            EquipamientoForm(post_data, file_data),
+            CochePeritajeForm(post_data, file_data),
+            ClientePeritarForm(post_data, file_data),
+            InspeccionCubiertasForm(post_data, file_data),
+            InspeccionGralForm(post_data, file_data),
         ]
 
     def _validate_forms(self, forms):
@@ -160,7 +176,6 @@ class CombinedView(LoginRequiredMixin, View):
     def _create_peritaje(self, request, forms):
         usuario = request.user
         branch_id = request.POST.get('branch')
-            
         branch = get_object_or_404(Branch, id=branch_id)
         unidad_negocio_id = request.POST.get('unidad_negocio')
         unidad_negocio = get_object_or_404(Unidad_negocio, id=unidad_negocio_id)
@@ -179,6 +194,8 @@ class CombinedView(LoginRequiredMixin, View):
         for form in forms:
             if form.is_valid():
                 obj = form.save(commit=False)
+                if isinstance(obj, CochePeritaje):
+                    obj.fecha_tasacion = datetime.now()  # Asignar la fecha actual a fecha_tasacion
                 obj.peritaje = peritaje
                 obj.save()
 
@@ -193,10 +210,10 @@ class CombinedView(LoginRequiredMixin, View):
         except CreadoPor.DoesNotExist:
             return usuario
 
-    def _get_error_context(self, forms):
+    def _get_error_context(self, forms, file_data):
         errors = {form.__class__.__name__: form.errors for form in forms if not form.is_valid()}
         context = self._get_initial_context(self.request)
-        # Actualizar el contexto con los formularios llenos
+        # Actualizar el contexto con los formularios llenos y archivos
         context.update({
             'equipamiento_form': forms[1],
             'coche_form': forms[2],
@@ -205,9 +222,9 @@ class CombinedView(LoginRequiredMixin, View):
             'inspeccion_gral_form': forms[5],
             'gastos_total_form': forms[0],
             'errors': errors,
+            'file_data': file_data,
         })
         return context
-
 
 
 
@@ -299,20 +316,13 @@ def home(request):
         nombre_entrega_query = request.POST.get('nombre_entrega')
         patente_query = request.POST.get('patente')
         modelo_query = request.POST.get('modelo')
-        aceptado_query = request.POST.get('aceptado')
-        enviado_query = request.POST.get('enviado')
  
         if nombre_entrega_query:
             peritajes = peritajes.filter(clienteperitar__nombre_apellido_entrega__icontains=nombre_entrega_query)
         if patente_query:
-            peritajes = peritajes.filter(cocheperitaje__patente__exact=patente_query)
+            peritajes = peritajes.filter(cocheperitaje__patente__icontains=patente_query)
         if modelo_query:
             peritajes = peritajes.filter(cocheperitaje__modelo__icontains=modelo_query)
-        if aceptado_query:
-            peritajes  = peritajes.filter(estado__icontains = aceptado_query)
-        if enviado_query:
-            peritajes  = peritajes.filter(estado__icontains = enviado_query) 
-            print(peritajes)
  
     # Crear una lista de peritajes con la fecha de tasación
     peritajes_con_fechas = []
@@ -791,7 +801,7 @@ def reporte(request):
                 'fecha_tasacion': coche_peritaje.fecha_tasacion,
                 'coche_peritaje': coche_peritaje,
                 'cliente_peritar': cliente_peritar,
-                'total_gastos':total_gastos,
+                'total_gastos': total_gastos,
             })
         else:
             peritajes_con_fechas.append({
@@ -799,7 +809,7 @@ def reporte(request):
                 'fecha_tasacion': None,
                 'coche_peritaje': None,
                 'cliente_peritar': cliente_peritar,
-                'total_gastos':total_gastos,
+                'total_gastos': total_gastos,
             })
 
     # Ordenar por fecha de tasación de mayor a menor
@@ -807,10 +817,14 @@ def reporte(request):
 
     # Obtener todas las branches para el select
     branches = Branch.objects.all()
+    
+    # Obtener la cantidad de peritajes
+    cantidad = len(peritajes_con_fechas)
 
     context = {
         'peritajes': peritajes_con_fechas,
-        'branches': branches
+        'branches': branches,
+        'cantidad': cantidad,
     }
     
     return render(request, 'reporte.html', context)

@@ -107,7 +107,11 @@
                     <a href="{% url 'excel' %}?fecha={{ request.GET.fecha }}&branch={{ request.GET.branch }}" class="btn btn-success">
                         <i class="fas fa-file-excel"></i>
                     </a>
-                    {{cantidad}}
+                   <div class="form-group m-2"> 
+                    <button class="btn btn-primary">
+                        {{cantidad}}
+                    </button>
+                  </div>
                 </div>
             </form>
         </div>
