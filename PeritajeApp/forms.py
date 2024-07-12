@@ -101,7 +101,7 @@ class CochePeritajeForm(forms.ModelForm):
             'modelo': forms.TextInput(attrs={'class': 'form-control', 'style': 'font-size: 13px !important;', 'placeholder': 'Ej.: 208'}),
             'bateria_marca': forms.TextInput(attrs={'class': 'form-control', 'style': 'font-size: 13px !important;', 'placeholder': 'Ej.: Moura'}),
             'bateria_medida': forms.TextInput(attrs={'class': 'form-control','list': 'unidadOptions', 'style': 'font-size: 13px !important;', 'placeholder': 'Ej.: 75Ah'}),
-            'unidad_negocio': forms.Select(attrs={'class': 'form-control', 'style': 'font-size: 13px !important;'}),
+            'unidad_negocio': forms.Select(attrs={'class': 'form-control', 'style': 'font-size: 10px !important;'}),
         }
     def clean_unidad_negocio(self):
         unidad_negocio = self.cleaned_data.get('unidad_negocio')
@@ -262,7 +262,7 @@ class ClientePeritarForm(forms.ModelForm):
         exclude = ['peritaje']
         widgets = {
             'nombre_apellido_entrega': forms.TextInput(attrs={'class': 'form-control', 'style': 'font-size: 13px !important;','oninput': 'capitalizeWords(event)','onblur': 'capitalizeWords(event)',}),
-            'telefono_entrega': forms.TextInput(attrs={'class': 'form-control telefono_duenio', 'placeholder': 'Ej.: 54 9 (XXX) XXX XXXX','onkeypress': 'return isNumberKey(event)',  'oninput': 'formatArgentinianPhone(this)', 'style': 'font-size: 13px !important;'}),
+            'telefono_entrega': forms.TextInput(attrs={'class': 'form-control telefono_duenio', 'placeholder': 'Ej.: 54 9 (XXX) XXX XXXX','onkeypress': 'return isNumberKey(event)',  'oninput': 'formatArgentinianPhone(this)', 'style': 'font-size: 13px !important;', 'inputmode': 'tel', 'type': 'tel' }),
             'nombre_apellido_duenio': forms.TextInput(attrs={'class': 'form-control', 'style': 'font-size: 13px !important;','oninput': 'capitalizeWords(event)','onblur': 'capitalizeWords(event)',}),
             'telefono_duenio': forms.TextInput(attrs={'class': 'form-control telefono_duenio','placeholder': 'Ej.: 54 9 (XXX) XXX XXXX', 'onkeypress': 'return isNumberKey(event)',  'oninput': 'formatArgentinianPhone(this)', 'style': 'font-size: 13px !important;'}),
             'email_entrega': forms.TextInput(attrs={'class': 'form-control', 'style': 'font-size: 13px !important;', 'placeholder': 'Ej.: pedro@gmail.com'}),

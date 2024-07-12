@@ -247,8 +247,19 @@ html {
 .floating-arrow.show {
     display: block;
 }
+.itv-field {
+    display: flex; /* Mostrar en todo momento */
+    flex-direction: row; /* Estilo flex */
+}
+.disabled-field {
+    background-color: #e8ecef !important; /* Color más oscuro para los campos deshabilitados */
+}
+input::placeholder{
+    color: #C0C0C0 !important;
+}
 
 </style>
+
 
 <div class="container">
     <h3 class="d-flex justify-content-center align-items-center m-3">
@@ -411,11 +422,13 @@ html {
                 </div>
                 <div class="col-md-3 col-sm-4 col-xs-6" style="padding: 0 !important;">
                     <div class="form-group">
-                        <label for="toggleITV">Tiene ITV o VTV? <input type="checkbox" id="toggleITV" onclick="toggleITVFields()" style="height: 15px !important;"></label>
-                        
+                        <label for="toggleITV">
+                        Vto. ITV o VTV
+                            <input type="checkbox" id="toggleITV" onclick="toggleITVFields()" style="height: 15px !important;">
+                        </label>
                     </div>
                     <div class="form-group itv-field">
-                        <label for="{{ coche_form.vto_de_vto_o_itv.id_for_label }}">Vto:</label>
+
                         {{ coche_form.vto_de_vto_o_itv }}
                     </div>
                 </div>
@@ -1220,17 +1233,19 @@ html {
         });
         
          // ITV OPCIONAL
-        function toggleITVFields() {
+         function toggleITVFields() {
             var checkBox = document.getElementById("toggleITV");
-            var itvFields = document.querySelectorAll(".itv-field");
+            var itvFields = document.querySelectorAll(".itv-field input");
 
             if (checkBox.checked) {
                 itvFields.forEach(function(field) {
-                    field.style.display = "flex";
+                    field.disabled = false;
+                    field.classList.remove('disabled-field');
                 });
             } else {
                 itvFields.forEach(function(field) {
-                    field.style.display = "none";
+                    field.disabled = true;
+                    field.classList.add('disabled-field');
                 });
             }
         }
@@ -1239,7 +1254,6 @@ html {
         document.addEventListener("DOMContentLoaded", function() {
             toggleITVFields();
         });
-
 
         </script>
         <script>

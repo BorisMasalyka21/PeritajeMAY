@@ -23,6 +23,45 @@
         cursor: not-allowed;
     }
 }
+/* Estilos CSS para el sufijo "mts" */
+.input-container-metros {
+    position: relative;
+}
+.input-container-metros input {
+    padding-right: 40px; /* Espacio para el sufijo "mts" */
+}
+.input-container-metros .suffix {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* No permitir interacción con el sufijo */
+    opacity: 0; /* Inicialmente oculto */
+    transition: opacity 0.3s ease; /* Transición suave de opacidad */
+}
+.input-container-metros.input-focus .suffix {
+    opacity: 1; /* Mostrar cuando el campo tiene foco o contenido */
+}
+{% comment %} KILOMETRO {% endcomment %}
+.input-container {
+    position: relative;
+}
+.input-container input {
+    padding-right: 30px; /* Espacio para el sufijo "km" */
+}
+.input-container .suffix {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* No permitir interacción con el sufijo */
+    opacity: 0; /* Inicialmente oculto */
+    transition: opacity 0.3s ease; /* Transición suave de opacidad */
+}
+.input-container.input-focus .suffix {
+    opacity: 1; /* Mostrar cuando el campo tiene foco o contenido */
+}
+
 </style>
 <div class="container">
     <div class="peritaje-info mt-3" style="text-align: center;">
@@ -953,23 +992,45 @@
         }
 
         //Script Kilometros 2.0
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const addKMSuffix = (inputId) => {
-                const input = document.getElementById(inputId);
-                input.addEventListener('blur', function() {
-                    let value = this.value.trim();
-                    if (value && !value.endsWith('km')) {
-                        this.value = value + ' km';
-                    }
-                });
-            };
-        
-            addKMSuffix('id_km');
-            addKMSuffix('id_service_aceite_km');
-            addKMSuffix('id_cambio_distribucion_km');
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const handleInput = (event) => {
+            let input = event.target;
+            let value = input.value.trim();
+            if (value.length > 0) {
+                input.parentNode.classList.add('input-focus'); // Agregar clase para mostrar el sufijo
+            } else {
+                input.parentNode.classList.remove('input-focus'); // Quitar clase si el campo está vacío
+            }
+        };
+
+        // Añadir manejadores de eventos para cada campo de entrada
+        const fields = ['id_km', 'id_service_aceite_km', 'id_cambio_distribucion_km'];
+        fields.forEach(fieldId => {
+            const input = document.getElementById(fieldId);
+            const inputContainer = document.createElement('div');
+            inputContainer.classList.add('input-container');
+            input.parentNode.insertBefore(inputContainer, input);
+            inputContainer.appendChild(input);
+
+            const suffix = document.createElement('span');
+            suffix.classList.add('suffix');
+            suffix.textContent = ' km'; // Sufijo visual "km"
+            inputContainer.appendChild(suffix);
+
+            input.addEventListener('input', handleInput);
         });
 
-
+        // Al enviar el formulario, asegurarse de que se envíe el valor correcto sin el "km"
+        document.getElementById('tu_formulario_id').addEventListener('submit', (event) => {
+            const inputs = document.querySelectorAll('.input-container input');
+            inputs.forEach(input => {
+                let value = input.value.trim();
+                if (value.endsWith('km')) {
+                    input.value = value.slice(0, -2).trim(); // Eliminar "km" y espacios al final antes de enviar
+                }
+            });
+        });
+    });
         //Volver atras
 function goBack() {
     window.history.back();
